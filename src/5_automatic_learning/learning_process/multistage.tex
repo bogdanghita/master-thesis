@@ -1,0 +1,34 @@
+\subsection{Multi-stage learning}
+\label{sub:learning:multistage}
+
+% ----------------------- paths to graphics ------------------------
+
+
+
+% ----------------------- contents from here ------------------------
+% 
+
+\iffalse
+\begin{verbatim}
+- separate pattern detectors into groups (stages) based on rules that determine which patterns work good together
+- use different pattern selector for each group
+- instead of putting all the patterns together with only one selector
+- each stage can take either the iterative approach or the recursive one
+\end{verbatim}
+\fi
+
+We observed that each learning algorithm has advantages and disadvantages and works better with different types of pattern detectors. E.g. the \nameref{sub:learning:recursiveexhaustive} algorithm has a wide coverage of the solution space of the problem, but does not support multi-column pattern detectors. In contrast, the \nameref{sub:learning:iterative} algorithm does not miss multi-column compression opportunities and converges faster, but has a poor coverage of the solution space. Moreover, in the case of \nameref{sub:learning:iterative}, each pattern selector (\(S\)) is suitable for certain pattern detectors.
+
+These observations lead to the conclusion that there is no \textit{one size fits all} learning algorithm and call for a combined approach that leverages the advantages of each of them. Therefore, we defined the \nameref{sub:learning:multistage} approach, which improves the learning process by chaining different algorithm instances together, each running in a separate stage.
+
+An algorithm instance \(A(\mathit{args})\) is an application of algorithm \(A\) on the input parameters \(\mathit{args}\). E.g. \(\mathit{IG}(P_{1})\) and \(\mathit{IG}(P_{2})\) will produce different compression trees \(T_{1}\) and \(T_{2}\) even though they are both instances of the \nameref{sub:learning:recursiveexhaustive} algorithm, because the pattern detector lists that they use \(P_{1}\) and \(P_{2}\) differ. This abstraction allows us to run the same learning algorithm with different pattern detectors or selectors and combine their results.
+
+Chaining compression learning algorithm instances \(A_{1}\) and \(A_{2}\) means executing \(A_{1}\) to get the compression tree \(T_{1}\), then executing \(A_{2}\) to build \(T_{2}\) based on \(T_{1}\). Chaining \(A_{1}\) and \(A_{2}\) requires that the output of \(A_{1}\) can be converted to the input of \(A_{2}\). This condition can be satisfied as all compression learning algorithms we proposed have compatible input and output parameters. The input of a learning algorithm is either one or more input columns or a compression tree. The output of all the algorithms is a compression tree. If \(A_{2}\) requires a compression tree as input, then \(T_{1}\) can be passed directly to it. If \(A_{2}\) requires a list of columns, then the leaf columns of \(T_{1}\) are passed to \(A_{2}\). In the second case, the output of \(A_{2}\) (\(T_{2}\)) needs to be merged with \(T_{1}\) to form the final compression tree \(T_{out}\). Additional input parameters (pattern detectors (\(P\)), pattern selectors (\(S\)), estimators (\(E\))) are independent of the result of the previous algorithm.
+
+One example of chaining 2 learning algorithms is the following: first execute an instance of \nameref{sub:learning:recursiveexhaustive} with the single-column pattern detectors. Then execute an instance of \nameref{sub:learning:iterative} with the multi-column pattern detector \nameref{subsec:pd:columncorrelation} and the \nameref{subsubsec:ps:correlation}. This will result in building the best compression tree using single-column pattern detectors and then applying column correlation to its leaf columns. This generic multi-stage design allows easy experimentation with any other combination of compression learning algorithm instances.
+
+TODO-1: diagram showing the multi-stage algorithm chaining
+
+% ---------------------------------------------------------------------------
+% ----------------------- end of thesis sub-document ------------------------
+% ---------------------------------------------------------------------------

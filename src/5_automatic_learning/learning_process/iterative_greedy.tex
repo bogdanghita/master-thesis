@@ -1,0 +1,90 @@
+\subsection{Iterative greedy learning}
+\label{sub:learning:iterative}
+
+
+% ----------------------- paths to graphics ------------------------
+
+
+
+% ----------------------- contents from here ------------------------
+% 
+
+This section presents a greedy iterative algorithm for compression learning. It uses a pattern selector (\(S\)) to greedily choose how to compress columns (\ref{sub:learning:selectors}~\nameref{sub:learning:selectors}) and the pattern detectors (\(P\)) defined in \ref{sec:pd}~\nameref{sec:pd}. The algorithm takes a breadth-first approach, thus supporting pattern detectors \(P\) that work on multiple columns (e.g. \nameref{subsec:pd:columncorrelation}). It takes as input the list of input columns (\(c_{in}\)) and builds the compression tree one level at a time.
+
+% https://en.wikipedia.org/wiki/Iterated_function
+The algorithm builds the compression tree \(T\) in an iterative process. Let \textit{add\_level(\(T\))} be an iterated function which adds 0 or more expression nodes (\(N\)) on a new level in \(T\). This function is repeatedly applied to T in an iterative process. Each call of the function uses the updated version of \(T\) that it produced in the previous iteration. The iterative process converges to the final compression tree \(T_{out}\) once no more changes are made to \(T\) in an iteration.
+
+The learning algorithm starts with \(P_{list}\) (a list of pattern detector instances), \(S\) (a pattern selector) and \(T\) (an empty compression tree, initialized with the list of input columns \(c_{in}\)). Recall that the compression tree is actually a graph with multiple connected components where each component is a directed acyclic graph with one or more root nodes (see \ref{sec:exprtree}~\nameref{sec:exprtree}). An additional parameter is \(it_{max}\), representing the maximum number of iterations. \(it_{max}\) also determines the maximum height of the compression tree (\(h_{max}\)), since every iteration adds a new level to \(T\).
+
+The \textit{add\_level} function adds new compression nodes (\(N\)) to \(T\) by trying to further compress its leaf (output) columns \(c_{leaf}\). It does this in 2 steps. Step-1 pattern detection: use the pattern detectors \(P_{list}\) to generate all possibilities to compress the leaf columns, resulting in a list of expression nodes \(N_{list}\). Step-2 pattern selection: use the pattern selector \(S\) to select a subset of \(N_{list}\) (\({N_{s}}_{list}\)), representing the best way to compress each \(c_{leaf}\). Finally, the expression nodes in \({N_{s}}_{list}\) are added to as a new level. If no expression nodes (\(N\)) are selected (i.e. \({N_{s}}_{list}\) is empty), then the iterative learning algorithm converged to the final compression tree \(T\).
+
+The algorithm is described in listings \ref{lst:learning:iterativegreedy:build_T} and \ref{lst:learning:iterativegreedy:add_level}.
+
+\begin{lstlisting}[language=Python,
+label={lst:learning:iterativegreedy:naming},
+caption={Naming conventions}]
+c = column
+P = pattern detector
+S = pattern selector
+T = compression tree
+N = compression node
+\end{lstlisting}
+
+\begin{lstlisting}[language=Python,
+label={lst:learning:iterativegreedy:build_T},
+caption={build\_T (iterative greedy)}]
+def build_T(c_in_list, P_list, S)
+  # initialize T with the input columns
+  T = CompressionTree(c_in_list)
+  # iterative process
+  for it in range(0, it_max):
+    add_level(T, P_list, S)
+    if <no changes made to T>:
+      break
+  # return final compression tree
+  return T
+\end{lstlisting}
+\bigskip
+
+\begin{lstlisting}[language=Python,
+label={lst:learning:iterativegreedy:add_level},
+caption={add\_level (iterative greedy)}]
+def add_level(T, P_list, S):
+  c_leaf_list = T.c_leaf_list
+  # pattern detection 
+  N_list = list()
+  for P in P_list:
+    N_p_list = P.evaluate(c_leaf_list)
+    N_list.extend(N_p_list)
+  # select expression nodes
+  N_s_list = S.select(N_list)
+  # stop if no expression nodes were selected
+  if len(N_s_list) == 0:
+    return
+  # add selected expression nodes to T
+  T.update(N_s_list)
+\end{lstlisting}
+\bigskip
+
+The complexity of the algorithm is given by the total number of columns in the final compression tree multiplied by the effort spent on evaluating the pattern detectors on it and choosing the expression node that it will be compressed with:
+\begin{equation}
+\label{eq:learning:recursiveexhaustive}
+    c_{in} \times (b) ^ {h_{max}} \times (p + p \times \mathit{avg}(n_{p}))
+\end{equation}
+where:
+\begin{itemize}
+    \item[] \(c_{in}\) = number of input columns
+    \item[] \(b\) = branching factor of the compression tree (as defined in Equation \ref{eq:optimizationproblem:b})
+    \item[] \(h_{max}\) = maximum height of the compression tree
+    \item[] \(p\) = number of pattern detectors
+    \item[] \(n_{p}\) = number of expression nodes returned by a pattern detector
+\end{itemize}
+In the worst case when the maximum number of iterations is reached, \(h_{max}\) becomes \(it_{max}\), thus the complexity is bounded by \(it_{max}\).
+
+Regardless of the nature of the pattern selector \(S\), the algorithm is greedy, as it makes irreversible locally best choices which only depend on previously made choices. The breadth-first approach allows the use of multi-column pattern detectors, representing an advantage compared to the \nameref{sub:learning:recursiveexhaustive} algorithm, which misses compression opportunities by handling each column separately. The greedy model significantly reduces the number of solutions explored, leading only to a locally best solution. At the same time, the reduced dimension of the explored solution set ensures faster termination of the algorithm. The advantages of both algorithms can be combined with the \nameref{sub:learning:multistage} approach described in section \ref{sub:learning:multistage}.
+
+TODO-1: image describing the iterative process
+
+% ---------------------------------------------------------------------------
+% ----------------------- end of thesis sub-document ------------------------
+% ---------------------------------------------------------------------------

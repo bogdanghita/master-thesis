@@ -1,0 +1,53 @@
+\subsection{Pattern selectors}
+\label{sub:learning:selectors}
+
+% ----------------------- paths to graphics ------------------------
+
+
+
+% ----------------------- contents from here ------------------------
+% 
+
+A generic pattern selector is an abstraction used in the learning process for selecting the \textit{expression nodes} that will be added to the compression tree. Given a list of \textit{(expression node, evaluation result)} tuples resulted in the pattern detection phase, it outputs a subset of the expression trees provided as input. This selection process is necessary as there are multiple ways of representing the same column. The generic pattern selector chooses the best \textit{expression nodes} according to a set of criteria. Different implementations of pattern selectors are described below.
+
+TODO-1: [?] image describing the input and output of the generic pattern selector; not necessary but may be added for completeness and for reuse in the learning algorithms diagrams
+
+\subsubsection{Coverage pattern selector}
+\label{subsubsec:ps:coverage}
+
+The coverage pattern selector tries to maximize the coverage of each column (i.e. minimize the exception ratio). It has 2 operation modes: 1) \textit{single-pattern}: selects the \textit{expression node} with the highest coverage; 2) \textit{multi-pattern}: selects the best combination of \textit{expression nodes} that give the largest coverage when used together on the same column.
+
+TODO-1: describe multi-pattern algorithm, complexity, threshold for brute force approach, greedy fallback, [?] practical results (threshold never exceeded so far)
+
+TODO-2: describe multi-pattern purpose and possible decompression performance improvement
+
+\subsubsection{Priority pattern selector}
+\label{subsubsec:ps:priority}
+
+In addition to the \textit{expression node} list, this pattern selector also receives a set of priority classes for pattern detector types. Each priority class contains a list of pattern detectors (e.g. \nameref{subsec:pd:numericstrings}, \nameref{subsec:pd:charsetsplit}, etc.) and a pattern selector that will be used to select the patterns in the same class. The selection process works in the following way:\\
+1) for each column, select only the \textit{expression nodes} with the highest priority (their associated pattern detector has the highest priority according to the provided list)\\
+2) further select these \textit{expression nodes} with the pattern selector provided with their priority class and output the result
+
+TODO-1: example of priority list and explanation of how the selection works on the example
+
+TODO-2: advantage of grouping pattern detectors in priority classes and using appropriate pattern selectors for each group.
+
+\subsubsection{Correlation pattern selector}
+\label{subsubsec:ps:correlation}
+
+This pattern selector is specialized in \nameref{subsec:pd:columncorrelation} \textit{expression nodes}. The \nameref{subsec:pd:columncorrelation} pattern detector outputs all the correlations between the columns in the dataset, resulting in multiple possibilities of representing the same column as a function of other columns---multiple \textit{(source, target)} pairs with the same target column. The \nameref{subsubsec:ps:correlation} selects the \textit{expression nodes} such that every \textit{target} column is represented by a single \textit{source} column, while also trying to satisfy and maximize the conditions and metrics presented below.
+
+TODO-1: image showing the complexity of a correlation graph
+
+TODO-2: describe additional conditions and metrics
+
+TODO-3: describe optimization problem
+
+TODO-4: describe algorithm, complexity, correctness/completeness
+
+TODO-5: image with simple graph showing the edges selected by the algorithm
+
+
+% ---------------------------------------------------------------------------
+% ----------------------- end of thesis sub-document ------------------------
+% ---------------------------------------------------------------------------

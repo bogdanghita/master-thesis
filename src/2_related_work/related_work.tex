@@ -1,0 +1,36 @@
+% this file is called up by thesis.tex
+% content in this file will be fed into the main document
+
+\chapter{Related work} % top level followed by section, subsection
+
+
+% ----------------------- paths to graphics ------------------------
+
+% change according to folder and file names
+\ifpdf
+    \graphicspath{{7/figures/PNG/}{7/figures/PDF/}{7/figures/}}
+\else
+    \graphicspath{{7/figures/EPS/}{7/figures/}}
+\fi
+
+
+% ----------------------- contents from here ------------------------
+% 
+
+The problem of compressing data has received significant attention from the database research community over the past 25 years \cite{abadi2006integrating,zukowski2006super,lang2016data,polychroniou2015efficient,graefe1991data}. Existing work covers a wide range of approaches to this problem: compression algorithms, efficient hardware-conscious implementations, compressed execution, all integrated into real database systems \cite{kemper2011hyper,zukowski2012vectorwise}.
+
+The goal of reducing I/O bandwidth has directed the focus towards lightweight compression schemes: dictionary compression, run-length encoding, frame-of-reference, delta coding, null suppression \cite{abadi2006integrating,goldstein1998compressing,lemire2015decoding,roth1993database,zukowski2006super}. Zukowski et al. \cite{zukowski2006super} proposed improved versions of these techniques that efficiently handle exceptions and achieve fast vectorized execution. Various storage formats that facilitate compression and compressed execution have been proposed. Data Blocks \cite{lang2016data} is a compressed columnar storage format that reduces memory footprint through hot-cold data classification. Raman et al. \cite{raman2013db2} optimized query execution time for analytics use cases through in memory query processing on the dictionary compressed column-organized format of IBM DB2 BLU.
+
+All this work focuses on low level optimizations to either speed up query execution or improve the compression rates. These solutions revolve around the same compression schemes and rely on fine-tuned hardware-conscious implementations leveraging SIMD instructions and vectorized execution to save CPU cycles and increase CPU efficiency. In contrast, we approach the problem of compression from a different angle. Our focus is on expressing the data in a completely different way, through simple operators chained together to form data-aware compression trees. Automatic generation of these compression expressions is based on finding patterns in the data and correlations amongst different columns. Lee et al. \cite{lee2014joins} mention the possibility of exploiting the correlations among columns at query time with the purpose of performing join operations on columns with different encodings. In contrast, we want to exploit these correlations during compression, to obtain better compression ratios.
+
+The closest work to our research is \cite{raman2006wring}, where Raman et al. exploit data properties (skewed distributions and correlations) to achieve high compression ratios. They concatenate correlated columns and encode them together using a variation of Huffman trees which preserve partial ordering. Additionally, a sequence of type specific transformations, sorting and delta coding is also applied. We see this approach as heavy-weight black-box compression as it is hard-coded and relies on multiple rounds of Huffman encoding. Moreover, all the patterns in the data need to be manually supplied by the user (correlations and domain specific transformations). Our work differs in multiple ways: 1) we exploit correlated columns by sharing the same physical columns between related logical columns; 2) we apply a wide range of domain specific operators tailored to the data, including splitting columns and then recursively applying the same procedure; 3) our process is fully automated, from determining patterns and correlations between columns, to generating custom expressions trees.
+
+Damme et al. \cite{damme2017lightweight} performed an exhaustive evaluation of existing compression algorithms and concluded that compression rates are highly dependent on the properties of the data and that combinations of multiple techniques lead to the best results. These results support our reasons for better understanding the data and chaining elementary operators into complex compression trees and encourage us to see how our white-box approach affects both compression rates and query execution time.
+
+Additionally, while most compression solutions proposed so far were mainly evaluated and compared to each other on synthetic benchmarks \cite{abadi2006integrating,zukowski2006super,lee2014joins,lang2016data,raman2013db2}, we are the first to use such a comprehensive user generated dataset as the Public BI benchmark \cite{pbib}. Two examples of benchmarks used for evaluating database compression and compressed execution are TPC-H \cite{boncz2013tpc} and its successor TPC-DS \cite{nambiar2006making}. Both are synthetic and do not reflect the nature of real data. The Public BI benchmark contains 422 GB of data and 900 analytics queries available on Tableau Public \cite{vogelsgesang2018get, tableaupublic}. The large volume of data, it’s diversity in content and the extended character set make it suitable for evaluating compression solutions.
+
+
+
+% ---------------------------------------------------------------------------
+% ----------------------- end of thesis sub-document ------------------------
+% ---------------------------------------------------------------------------
