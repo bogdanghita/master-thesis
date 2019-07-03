@@ -8,40 +8,189 @@
 % ----------------------- contents from here ------------------------
 % 
 
+The compression learning process is an optimization problem (\ref{subsec:learningprocess:optimizationproblem}) for finding the best compression tree in terms of disk size of the resulting physical columns. Solving the optimization problem requires a way to compare its solutions, i.e. estimating the final size of the compressed data. For this purpose we created a cost model which relies on leaf compression schemes size estimators (DICT, RLE, FOR, no compression) to predict the size of a column if compressed with these methods.
+
+\textbf{Methodology}. The score of a solution (compression tree) is computed through the following methodology: 1) represent the sample data according to the compression nodes; 2) for each column of the new representation, estimate its size if it were compressed with: DICT, RLE, FOR or not compressed at all; 3) choose the smallest size among those. The result of this process is the smallest size of the new data representation if it were compressed with leaf compression schemes.
+
+\textbf{System assumptions}. The size on disk of a compressed column depends on: 1) implementation of the compression method; 2) characteristics of the underlying database system. The former is described in the next sections as part of the estimator implementations. For the latter we defined some assumptions of the underlying system as follows:\\
+a) \textit{data types}: strings are stored with null terminator, therefore their size is given by the number of characters + 1. For all other data types we consider the sizes used by Ingres Vectorwise \cite{zukowski2012vectorwise,actianingres}. \\
+b) \textit{null handling}: we consider the same approach  used by Vectorwise \cite{zukowski2012vectorwise}: do not store null values, instead, keep track of their positions using a bitmap. This results in 1 additional bit for every attribute (for nullable columns).\\
+c) \textit{exception handling}: we consider a whitebox approach: for each logical column store exceptions on a separate physical nullable column. The exception column has the same datatype as the logical column.
+
+An additional assumption that we make about the underlying system is that it supports block-level compression, i.e. every block of data is compressed independently. This allows different compression schemes to be used on the same column, enabling the possibility to exploit local data characteristics.
+
+\subsubsection{Generic compression estimator}
+\label{subsub:estimator:generic}
+A compression estimator takes as input a column and two samples of data (\textit{train} and \textit{test} sample) and outputs the estimated size of the compressed column. The result can be either the size of the compressed sample or the size extrapolated to the total size of the block or column. The latter requires an additional parameter specifying the total number of rows in the full data.
+
+The estimated size has 4 components (exemplified for Dictionary encoding):\\
+1) \(size_{metadata}\): size of the metadata (the dictionary itself)\\
+2) \(size_{data}\): size of the compressed data (the dictionary ids)\\
+3) \(size_{ex}\): size of the exceptions  (the values that are not in the dictionary)\\
+4) \(size_{null}\): size required to keep track of the null values. Since exceptions are stored on a separate nullable column, the \textit{nulls} size is implicitly increased.
+
+The final estimated size of the test sample is the sum of the 4 components:
+\begin{equation}
+\label{eq:estimators:sizesample}
+size_{sample} = size_{metadata} + size_{data} + size_{ex} + size_{null}
+\end{equation}
+
+This result gives the size of the \textit{test} sample only. It can be extrapolated to the full size of the block or entire column as follows:
+\begin{equation}
+\label{eq:estimators:sizefinal}
+size_{full} = size_{sample} \times \frac{count_{full}}{count_{sample}}
+\end{equation}
+where:
+\begin{itemize}
+    \item[] \(count_{sample}\) = total number of values in the test sample
+    \item[] \(count_{full}\) = total number of values in the full block or column
+\end{itemize}
+
+The size estimation process works in two phases:\\
+1) \textit{training}: the estimator analyzes the \textit{train} sample and generates the metadata needed for compression (e.g. \nameref{subsub:estimator:dict} generates the dictionary, \nameref{subsub:estimator:for} determines the reference value and the number of bits needed to store the differences).\\
+2) \textit{testing}: the estimator simulates the compression of the \textit{test} sample using the metadata resulted from the \emph{training} phase and outputs an estimated size.
+
+The two-phase estimation process is used to avoid overly-optimistic results: metadata generated based on the \emph{train} sample is perfectly optimized for that sample (e.g. in FOR all differences will fit in the number of bits chosen to represent them). Depending on the implementation of each compression estimator, this would lead to a reduced number of exceptions or even no exceptions at all. Therefore, the \textit{test} sample is used to provide new data for size estimation. It produces exceptions and more realistic results. This approach simulates the compression process of real database systems, where the compression metadata is created based on a sample and then applied on a full block of data or even on the entire column.
+
+The next sections describes 4 compression estimators used in the learning process. All computed sizes will be in bytes.
+
+
+% ------- no compression ------- % 
+
 \subsubsection{No compression estimator}
 \label{subsub:estimator:nocompression}
 
-\begin{verbatim}
-TODO
-\end{verbatim}
+The \nameref{subsub:estimator:nocompression} predicts the size of the input column stored without compression. The \textit{training} phase is not relevant since it does not generate any compression metadata. The estimation is performed in the \textit{testing} phase, based on the size on disk of the column data type. The size components are computed as follows:
 
-\subsubsection{Bits estimator}
-\label{subsub:estimator:bits}
+\(size_{metadata}\) is 0, since there is no compression metadata
 
-\begin{verbatim}
-TODO
-\end{verbatim}
+\(size_{ex}\) is 0, since there are no exceptions
+
+\(size_{null}\) is 1 bit for every value in the sample: 
+\begin{equation}
+\label{eq:estimators:nocompression:sizenull}
+size_{null} = \frac{count_{sample}}{8}
+\end{equation}
+where:
+\begin{itemize}
+    \item[] \(count_{sample}\) = total number of values in the test sample
+\end{itemize}
+
+\(size_{data}\) is given by the total size of the non-null values in the sample. It depends on the data type of the column as follows:
+\begin{equation}
+\label{eq:estimators:nocompression:sizedata}
+size_{data} = 
+\left\{
+\begin{array}{ll}
+    \sum_{v \neq \mathit{null}} \mathit{len}(v) + 1 & \mbox{if } \mathit{datatype} = \verb|VARCHAR|\\
+    count_{notnull} \times size_{datatype} & \mbox{else}
+\end{array}
+\right.
+% \frac{count_{sample}}{8}
+\end{equation}
+where:
+\begin{itemize}
+    \item[] \(count_{notnull}\) = total number of non-null values in the test sample
+    \item[] \(size_{datatype}\) = size on disk of the column data type
+\end{itemize}
+
+
+% ------- dictionary ------- % 
 
 \subsubsection{Dictionary estimator}
 \label{subsub:estimator:dict}
 
-\begin{verbatim}
-TODO
-\end{verbatim}
+The \nameref{subsub:estimator:dict} predicts the size of the input column as compressed with Dictionary encoding. Besides the two samples, it receives an additional parameter: \(size_{max}\)---maximum size of the dictionary (in bytes). It only works on \verb|VARCHAR| columns and therefore the exception column will also be \verb|VARCHAR|.
 
-\subsubsection{RLE estimator}
+Dictionary encoding only produces good results on columns that have a small number of unique values. However, it is hard to reliably quantify this property when analyzing only a sample of the data. Moreover, the distribution of unique values may be skewed, with only a few values with high frequency and a long tail of low frequency values. For the purpose of our estimator, we addressed this issue by enforcing a maximum dictionary size and only keeping the most common values in the dictionary. This approach is also suitable if blocks of data are compressed independently: dictionaries need to be small as they are assigned per block. There are other (possibly better) ways of optimizing the dictionary values and size. However, they are out of the scope of our estimator, since we use it to compare different ways of compressing a column and the dominant factor here is the nature of the data, not the optimization of the compression scheme.
+
+\textbf{Training phase.} The dictionary (metadata) is built during the \textit{training} phase in 2 steps: Step-1: create the histogram of all the values in the \textit{train} sample. Step-2: select as many values from the histogram in decreasing order of their number of occurrences such that their total size is lower or equal to the maximum size of the dictionary (\(size_{max}\)). The dictionary is stored as an array containing the selected values. The indices in the array represent the dictionary ids used to encode the values.
+
+\(size_{metadata}\) is given by the total size of the values in the dictionary. Additionally, the number of bits required to store a dictionary id is computed as follows:
+\begin{equation}
+\label{eq:estimators:dict:bitsid}
+bits_{id} = \lceil \log_2 (count_{entries}) \rceil
+\end{equation}
+where:
+\begin{itemize}
+    \item[] \(count_{entries}\) = number of values in the dictionary
+\end{itemize}
+
+\textbf{Testing phase}. The \textit{testing} phase estimates the size of the compressed column by going through each value in the \textit{test} sample and checking if it is present in the dictionary. The following variables are updated in this process: 1) \(count_{valid}\): number of values that are found in the dictionary; 2) \(size_{ex}\): size of the exceptions (values that are not found in the dictionary).
+
+\(size_{data}\) is computed as follows:
+\begin{equation}
+\label{eq:estimators:dict:sizedata}
+size_{data} = \frac{count_{valid} \times bits_{id}}{8}
+\end{equation}
+
+\(size_{ex}\) is computed by adding the size of all exceptions.
+
+\(size_{null}\) is determined by the number of resulting physical columns: one for compressed data (dictionary ids) and one for exceptions:
+\begin{equation}
+\label{eq:estimators:dict:sizenull}
+size_{null} = \frac{2 \times count_{sample}}{8}
+\end{equation}
+where:
+\begin{itemize}
+    \item[] \(count_{sample}\) = total number of values in the test sample
+\end{itemize}
+
+
+% ------- run length encoding ------- % 
+
+\subsubsection{Run Length Encoding estimator}
 \label{subsub:estimator:rle}
 
-\begin{verbatim}
-TODO
-\end{verbatim}
+The \nameref{subsub:estimator:rle} predicts the size of the input column as compressed with RLE. Even though RLE can be applied to any data type, we limited the scope of our estimator to numeric columns. The other data types are either compressed with Dictionary encoding (\verb|VARCHAR|) or are very rare in the Public BI benchmark and do not present compression opportunities. We use the following terminology:\\
+1) \textit{run} value = a data value that is repeated on consecutive rows.\\
+2) \textit{length} value = the number of consecutive occurrences of a \textit{run} value
 
-\subsubsection{FOR estimator}
+\textbf{Training phase.} RLE metadata is composed of: 1) the number of bits needed to represent the \textit{run} values (\(bits_{run}\)) and 2) the number of bits needed to represent the \textit{length} values (\(bits_{length}\)). These values are determined by scanning the \textit{train} sample and computing all the \textit{runs} and \textit{lengths}. \(bits_{run}\) is given by the \textit{run} value of maximum size and \(bits_{length}\) is given by the maximum \textit{length}. \(bits_{run}\) also depends on the column data type representation.
+
+\(size_{metadata}\) is between 8 and 24 bytes---the size of 2 numbers: \(bits_{run}\) and \(bits_{length}\)---depending on the data types used to store them.
+
+\textbf{Testing phase.} The \textit{testing} phase scans all the values in the \textit{test} sample and creates (\textit{run}, \textit{length}) pairs as follows: 1) if a \textit{run} value cannot be represented on \(bits_{run}\) bits: mark it as exception and skip it; 2) if a \textit{length} exceeds the maximum value that can be represented on \(bits_{length}\) bits: end the current run at this length and start a new run. The following variables are updated in this process: 1) \(count_{valid}\): the number of (\textit{run}, \textit{length}) pairs resulted from the scanning process; 2) \(count_{ex}\): the number of exceptions as defined above.
+
+\(size_{data}\) and \(size_{ex}\) are computed as follows:
+\begin{equation}
+\label{eq:estimators:rle:sizedata}
+size_{data} = \frac{count_{valid} \times (bits_{run} + bits_{length})}{8}
+\end{equation}
+\begin{equation}
+\label{eq:estimators:rle:sizeex}
+size_{ex} = count_{ex} \times size_{datatype}
+\end{equation}
+where:
+\begin{itemize}
+    \item[] \(size_{datatype}\) = size on disk of the column data type
+\end{itemize}
+
+\(size_{null}\) depends on the number of physical columns---one compressed data column (\textit{run} and \textit{length} are stored together) and one exception column---the same as in the case of \nameref{subsub:estimator:dict} (Equation \ref{eq:estimators:dict:sizenull}).
+
+
+% ------- frame of reference ------- % 
+
+\subsubsection{Frame of Reference estimator}
 \label{subsub:estimator:for}
 
-\begin{verbatim}
-TODO
-\end{verbatim}
+The \nameref{subsub:estimator:for} predicts the size of the input column as compressed with FOR. It only works on numeric columns.
+
+\textbf{Training phase.} FOR metadata is composed of: 1) the \textit{reference} value and 2) the number of bits needed to store the differences (\(bits_{\mathit{diff}}\)). In our implementation we chose the \textit{reference} to be the smallest value in the \textit{train} sample. \(bits_{\mathit{diff}}\) is given by the maximum difference size, which depends on the data type representation.
+
+\(size_{metadata}\) is between 8 and 24 bytes---the size of the reference and the size of \(bits_{\mathit{diff}}\)---depending on the data types used to store them.
+
+\textbf{Testing phase.} The testing phase computes all the differences between the values in the \textit{test} sample and the \textit{reference} and filters the ones that can be represented on \(bits_{\mathit{diff}}\) bits. The following variables are updated in this process: 1) \(count_{valid}\): the number of differences that fit in \(bits_{\mathit{diff}}\); 2) \(count_{ex}\): the number of exceptions (values that give differences larger than \(bits_{\mathit{diff}}\)).
+
+\(size_{data}\) is computed as follows:
+\begin{equation}
+\label{eq:estimators:for:sizedata}
+size_{data} = \frac{count_{valid} \times bits_{\mathit{diff}}}{8}
+\end{equation}
+
+\(size_{ex}\) is the same as in the case of \nameref{subsub:estimator:rle} (Equation \ref{eq:estimators:rle:sizeex}).
+
+\(size_{null}\) depends on the number of physical columns---one compressed data column (differences) and one exception column---the same as in the case of \nameref{subsub:estimator:rle} and \nameref{subsub:estimator:dict} (Equation \ref{eq:estimators:dict:sizenull}).
 
 % ---------------------------------------------------------------------------
 % ----------------------- end of thesis sub-document ------------------------

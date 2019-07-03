@@ -8,9 +8,14 @@
 % ----------------------- contents from here ------------------------
 % 
 
+Section \ref{sub:learning:recursiveexhaustive} described an exhaustive learning algorithm based on compression estimators (\ref{sub:estimators}). A greedy learning algorithm based on \emph{pattern selectors} will be described in section \ref{sub:learning:iterative}. Pattern selectors are decision algorithms used to make greedy choices in the compression learning process. This section describes the general characteristics of a pattern selector and specialized instances of it.
+
+\subsubsection{Generic pattern selector}
+\label{subsubsec:ps:generic}
+
 A generic pattern selector is an abstraction used in the learning process for selecting the \textit{expression nodes} that will be added to the compression tree. Given a list of \textit{(expression node, evaluation result)} tuples resulted in the pattern detection phase, it outputs a subset of the expression trees provided as input. This selection process is necessary as there are multiple ways of representing the same column. The generic pattern selector chooses the best \textit{expression nodes} according to a set of criteria. Different implementations of pattern selectors are described below.
 
-TODO-1: [?] image describing the input and output of the generic pattern selector; not necessary but may be added for completeness and for reuse in the learning algorithms diagrams
+TODO-2: [?] image describing the input and output of the generic pattern selector; not necessary but may be added for completeness and for reuse in the learning algorithms diagrams
 
 \subsubsection{Coverage pattern selector}
 \label{subsubsec:ps:coverage}
@@ -46,6 +51,11 @@ TODO-3: describe optimization problem
 TODO-4: describe algorithm, complexity, correctness/completeness
 
 TODO-5: image with simple graph showing the edges selected by the algorithm
+
+\subsubsection{Character set split pattern selector}
+\label{subsubsec:ps:charsetsplit}
+
+TODO-1: describe selector
 
 
 % ---------------------------------------------------------------------------
