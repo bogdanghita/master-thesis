@@ -1,0 +1,13 @@
+\begin{table}[h]
+\centering
+\begin{tabular}{l|lll}
+\hline
+column                & customer                      & account                      & transaction                 \\
+\(charset_{list}\)    & \verb|[a-zA-Z]|, \verb|[0-9]| & \verb|[a-zA-Z]|,\verb|[0-9]| & \verb|[0-9a-fA-F]|          \\
+placeholders          & \verb|L|, \verb|D|, \verb|?|  & \verb|L|, \verb|D|, \verb|?| & \verb|H|, \verb|?|          \\
+\(v_{s}\)             & \verb|customer0001|           & \verb|HHSI2452____|          & \verb|{9AE2B97B-69D0-4A5E}| \\
+\(charset_{pattern}\) & \verb|LD|                     & \verb|LD?|                   & \verb|?H?H?H?|              \\ \hline
+\end{tabular}
+\caption{Charset structure examples}
+\label{tab:pd:charsetsplit:charsetpattern}
+\end{table}

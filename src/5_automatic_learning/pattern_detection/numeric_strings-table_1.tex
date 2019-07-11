@@ -1,0 +1,16 @@
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}llllll@{}}
+\toprule
+\(v_{string}\)    & \(v_{numeric}\) & \textit{prefix} & \(abs(v_{numeric})\) & \textit{suffix} & \textit{description}               \\ \midrule
+\verb|"1.23"|     & \verb|1.23|     & \verb|""|       & \verb|1.23|          & \verb|""|       & no format information              \\
+\verb|"1.2300"|   & \verb|1.23|     & \verb|""|       & \verb|1.23|          & \verb|"00"|     & trailing zeros                     \\
+\verb|"000.1"|    & \verb|0.1|      & \verb|"00"|     & \verb|0.1|           & \verb|""|       & leading zeros                      \\
+\verb|"+10"|      & \verb|10|       & \verb|"+"|      & \verb|10|            & \verb|""|       & \(+\) sign                         \\
+\verb|"-10"|      & \verb|-10|      & \verb|"-"|      & \verb|10|            & \verb|""|       & negative number                    \\
+\verb|"-000.5"|   & \verb|-0.5|     & \verb|"-00"|    & \verb|0.5|           & \verb|""|       & negative number with leading zeros \\
+\verb|"__54\t\t"| & \verb|54|       & \verb|"__"|     & \verb|54|            & \verb|"\t\t"|   & leading and trailing whitespace    \\ \bottomrule
+\end{tabular}
+\caption{Numeric string format preserving examples}
+\label{tab:pd:numericstring:formatexamples}
+\end{table}

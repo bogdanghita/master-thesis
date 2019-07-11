@@ -28,9 +28,18 @@
 % or use the graphicx package for more complicated commands
 %\usepackage{graphicx}
 
+\usepackage[]{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{svg}
+
 \usepackage{nameref}
 \usepackage{verbatim}
 \usepackage{amsmath}
+\usepackage{url}
+\usepackage[utf8x]{inputenc}
+\usepackage{combelow}
+\usepackage{booktabs}
 
 % https://www.overleaf.com/learn/latex/Code_listing
 \usepackage{listings}
@@ -73,7 +82,7 @@
 %: ----------------------------------------------------------------------
 %:                  TITLE PAGE: name, degree,..
 % ----------------------------------------------------------------------
-\usepackage{graphicx}
+% \usepackage{graphicx}
 
       \textwidth 15cm
       \textheight 22cm
@@ -207,9 +216,9 @@
 
 %: ----------------------- contents ------------------------
 
-% \setcounter{secnumdepth}{3} % organisational level that receives a numbers
-% \setcounter{tocdepth}{3}    % print table of contents for level 3
-% \tableofcontents            % print the table of contents
+\setcounter{secnumdepth}{3} % organisational level that receives a numbers
+\setcounter{tocdepth}{3}    % print table of contents for level 3
+\tableofcontents            % print the table of contents
 % levels are: 0 - chapter, 1 - section, 2 - subsection, 3 - subsection
 
 
@@ -265,12 +274,14 @@
 
 \include{5_automatic_learning/automatic_learning}
 
+\include{6_evaluation/evaluation}
+
+\include{7_conclusion/conclusion}
+
 %\include{3_materials&methods/materials_methods}						
 %\include{4_analysis&results/analysis&results}	
 
 %\include{5_discussions/discussions}
-
-%\include{6_conclusion/conclusion}
           
 %\include{9_appendix/appendix}
       
