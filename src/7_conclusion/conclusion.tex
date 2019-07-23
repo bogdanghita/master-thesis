@@ -14,7 +14,24 @@
 
 \section{Conclusion}
 
+\iffalse
+- estimator wb leaf methods are not optimized, but even so wb compression brings an advantage; if optimized, could outperform the wb+vw combination; even so, wb can be used to enhance existing systems as an intermediate layer before the optimized leaf compression methods
+- even so, we showed that \textit{whitebox compression} can be used to enhance existing systems like VectorWise
+- creates opportunities for better compression with existing techniques
+- explored the concept of whitebox compression; created a poc; to see whether there are opportunities and what types of opportunities; evaluate the model through a basic poc to measure its feasibility and compression potential;
+- there is a lot more to improve, we just tested and showed the potential of whitebox compression through a basic implementation; all components: pattern detectors, pattern selectors, learning algorithms, estimators can be improved (there is a lot of room for improvement); even with this initial exploratory approach we obtained good results (insert result here), which only encorages future work on this topic; towards a highly optimized compression model and implemented in real systems, either as an intermediate representation layer or as a stand-alone system/storage/compression (and query execution) layer
+- These results show the high degree of redundancy present in real data---and that we can squeeze this redundancy out of the data with a proper exception handling mechanism.
+- From our experiments we concluded that data can be represented and compressed in many ways. However, the learning algorithm needs to choose a single data representation, ideally the one that gives the smallest physical size
+- many logical columns, mostly varchar, are transformed into fewer physical columns, mostly numeric, at the expense of many exception columns, very sparse. ALTERNATIVE: The take-away from this analysis is that we can represent many logical columns---mostly \verb|VARCHAR|---as functions of fewer physical columns---mostly numeric---at the expense of many exception columns---mostly nulls---and achieve high compression ratios, all of this automatically learned.
+\fi
+
 \section{Future work}
+
+\iffalse
+- (estimator) A more thorough experiment and analysis needs to be performed in order to properly evaluate the performance of a stand-alone \textit{whitebox} system in practice
+- different charsetsplit instances with differente charsets, extendend suport for numeric strings, improved and dedicated pattern selection \& different priority configuration => possible better results. however, current config and components already give good results, which only encourages us to further explore this compression model and improve the learning algorithm
+- ngram freq split
+\fi
 
 % ---------------------------------------------------------------------------
 % ----------------------- end of thesis sub-document ------------------------

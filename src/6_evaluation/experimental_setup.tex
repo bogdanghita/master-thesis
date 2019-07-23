@@ -1,0 +1,43 @@
+\section{Experimental setup}
+\label{sec:eval:expsetup}
+
+% ----------------------- paths to graphics ------------------------
+
+\graphicspath{{6_evaluation/images/}}
+
+% ----------------------- contents from here ------------------------
+% 
+
+We ran our experiments on a selection of 53 tables from the Public BI benchmark \cite{pbib}. The selection is made based on the observation that tables with the same schema have very similar data and sometimes are almost identical. Therefore, we only kept one table for each unique schema. We further removed a few more tables containing columns that could not be matched with the VectorWise data files because multiple columns are stored in the same file.
+
+TODO-1: add more info about the selected tables (e.g. total size, appendix with tables \& details about them: size, number of rows, number of columns).
+
+We configured our sampling tool to take samples of maximum 10MB with sequences of 64 consecutive rows. This resulted in samples of 20K rows on average and not less than 4K rows.
+
+In terms of the learning algorithm, we experimented with different configurations and we present the one that gave the best results---\nameref{sub:learning:multistage} (\ref{sub:learning:multistage}) with \(it_{max} = 16\) and 2 stages:
+\begin{itemize}
+    \item[\textit{Stage-1}] \nameref{sub:learning:iterative} (\ref{sub:learning:iterative}) with 4 pattern detector instances---
+    \nameref{subsec:pd:numericstrings} (\ref{subsec:pd:numericstrings}), 
+    \nameref{subsec:pd:charsetsplit} (\ref{subsec:pd:charsetsplit}), 
+    \nameref{subsec:pd:constant} (\ref{subsec:pd:constant}) and 
+    \nameref{subsec:pd:dict} (\ref{subsec:pd:dict})
+    ---and the \nameref{subsubsec:ps:priority} (\ref{subsubsec:ps:priority}).
+    \item[\textit{Stage-2}] One iteration of \nameref{sub:learning:iterative} (\ref{sub:learning:iterative}) with only one pattern detector---    \nameref{subsec:pd:columncorrelation} (\ref{subsec:pd:columncorrelation})---and the \nameref{subsubsec:ps:correlation} (\ref{subsubsec:ps:correlation})
+\end{itemize}
+
+The parameters for the pattern detectors are the following:\\
+\nameref{subsec:pd:charsetsplit}: 2 charsets: \textit{digits} and \textit{non-digits}---isolates numbers in strings\\
+\nameref{subsec:pd:columncorrelation}: \(corr\_coef_{min} = 0.9\)\\
+\nameref{subsec:pd:constant}: \(constant\_ratio_{min} = 0.9\)---columns that are below are handled with \nameref{subsec:pd:dict}\\
+\nameref{subsec:pd:dict}: \(size_{max} = 64K\)
+
+The \nameref{subsubsec:ps:priority} is configured with the following priorities: 1--\nameref{subsec:pd:constant}, 2--\nameref{subsec:pd:dict}, 3--\nameref{subsec:pd:numericstrings}, 4--\nameref{subsec:pd:charsetsplit}.
+It selects between expression nodes in the same priority class with the \nameref{subsubsec:ps:coverage}---configured in \textit{multi-pattern} mode with \(coverage_{min} = 0.2\). The \nameref{subsec:pd:constant} pattern detector has the highest priority since it is the most optimal way of compressing a constant column. The \nameref{subsec:pd:dict} expression nodes create opportunities for the  \nameref{subsec:pd:columncorrelation} step in \textit{Stage-2}. The \nameref{subsec:pd:numericstrings} pattern detector catches all string columns that contain numbers and the resulting format columns are handled in the next iteration with \nameref{subsec:pd:constant} and \nameref{subsec:pd:dict}. The remaining columns are left for the \nameref{subsec:pd:charsetsplit} pattern detector which creates new compression opportunities for the other pattern detectors in the next iteration.
+
+The compression estimators do not require additional parameters, excepting the \nameref{subsub:estimator:dict}, which uses the same maximum dictionary size as the \nameref{subsec:pd:dict} pattern detector: \(size_{max} = 64K\).
+
+TODO-2: add configuration and results for the \nameref{sub:learning:recursiveexhaustive}
+
+% ---------------------------------------------------------------------------
+% ----------------------- end of thesis sub-document ------------------------
+% ---------------------------------------------------------------------------
