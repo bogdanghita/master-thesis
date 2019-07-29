@@ -1,0 +1,63 @@
+\begin{table}[h]
+\centering
+\begin{minipage}{.75\linewidth}
+\centering
+\begin{tabular}{@{}ll@{}}
+\toprule
+\multicolumn{1}{c}{A} & \multicolumn{1}{c}{B}                    \\ \midrule
+\verb|"GSA_8350"|     & \verb|"GENERAL SERVICES ADMINISTRATION"| \\
+\verb|"GSA_8351"|     & \verb|"GENERAL SERVICES ADMINISTRATION"| \\
+\verb|"HHS_2072"|     & \verb|"HEALTH AND HUMAN SERVICES"|       \\
+\verb|"TREAS_4791"|   & \verb|"TREASURY"|                        \\
+\verb|"TREAS_4792"|   & \verb|"TREASURY"|                        \\
+\verb|"HHS_2073"|     & \verb|"HEALTH AND HUMAN SERVICES"|       \\
+\verb|"GSA_8352"|     & \verb|"GENERAL SERVICES ADMINISTRATION"| \\ \bottomrule
+\end{tabular}
+\caption*{Logical columns}
+\end{minipage}%
+\begin{minipage}{.25\linewidth}
+\centering
+\begin{tabular}{@{}cc@{}}
+\toprule
+P        & Q           \\ \midrule
+\verb|0| & \verb|8350| \\
+\verb|0| & \verb|8351| \\
+\verb|1| & \verb|2072| \\
+\verb|2| & \verb|4791| \\
+\verb|2| & \verb|4792| \\
+\verb|1| & \verb|2073| \\
+\verb|0| & \verb|8352| \\ \bottomrule
+\end{tabular}
+\caption*{Physical columns}
+\end{minipage}
+\caption{Whitebox representation example: data}
+\label{tab:exprlang:exprlang_2}
+\end{table}
+
+\begin{table}[h]
+\centering
+\begin{minipage}{.25\linewidth}
+\centering
+\begin{tabular}{@{}ll@{}}
+\toprule
+key      & value          \\ \midrule
+\verb|0| & \verb|"GSA"|   \\
+\verb|1| & \verb|"HHS"|   \\
+\verb|2| & \verb|"TREAS"| \\ \bottomrule
+\end{tabular}
+\caption*{\(dict_{AP}\)}
+\end{minipage}%
+\begin{minipage}{.6\linewidth}
+\centering
+\begin{tabular}{@{}ll@{}}
+\toprule
+key      & value                                    \\ \midrule
+\verb|0| & \verb|"GENERAL SERVICES ADMINISTRATION"| \\
+\verb|1| & \verb|"HEALTH AND HUMAN SERVICES"|       \\
+\verb|2| & \verb|"TREASURY"|                        \\ \bottomrule
+\end{tabular}
+\caption*{\(dict_{BP}\)}
+\end{minipage}
+\caption{Whitebox representation example: metadata}
+\label{tab:exprlang:exprlang_3}
+\end{table}

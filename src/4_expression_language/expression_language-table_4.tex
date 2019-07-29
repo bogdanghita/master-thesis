@@ -1,0 +1,16 @@
+\begin{table}[h]
+\centering
+\small
+\makebox[\textwidth][c]{
+\begin{tabular}{@{}lrll@{}}
+\toprule
+\multicolumn{1}{c}{Transformation}      & \multicolumn{3}{c}{Operator}                                                                      \\ \midrule
+Split a column into multiple columns    & \(split \colon\)   & \(C \to C \times C \times [...]\) & \(split(c) = c_a, c_b, [...]\)           \\
+Change datatype of a column             & \(cast \colon\)    & \(C \times M \to C\)              & \(cast(c, m_{\mathit{datatype}}) = c_a\) \\
+Direct mapping of another column        & \(map \colon\)     & \(C \times M \to C\)              & \(map(c, m_{map}) = c_a\)                \\
+Consume a column (constant/correlation) & \(consume \colon\) & \(C \times M \to \emptyset\)      & \(consume(c, m) = \emptyset\)            \\ \bottomrule
+\end{tabular}
+}
+\caption{Compression operator types}
+\label{tab:exprlang:exprlang_4}
+\end{table}

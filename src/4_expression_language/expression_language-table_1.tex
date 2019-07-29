@@ -1,0 +1,14 @@
+\begin{table}[h]
+\centering
+\makebox[\textwidth][c]{
+\begin{tabular}{l|rll}
+\multicolumn{1}{c|}{Representation} & \multicolumn{3}{c}{Operator}                                                                                          \\ \hline
+Concatenation of 2 or more columns  & \(concat \colon\) & \multicolumn{1}{l|}{\(C \times C \times [...] \to C\)} & \(c = concat(c_a, c_b, [...])\)          \\ \hline
+Formatting of another column        & \(format \colon\) & \multicolumn{1}{l|}{\(C \times M \to C\)}              & \(c = format(c_a, m_{\mathit{format}})\) \\ \hline
+Direct mapping of another column    & \(map \colon\)    & \multicolumn{1}{l|}{\(C \times M \to C\)}              & \(c = map(c_a, m_{map})\)                \\ \hline
+Constant representation             & \(const \colon\)  & \multicolumn{1}{l|}{\(M \to C\)}                       & \(c = const(m_{const})\)                
+\end{tabular}
+}
+\caption{Elementary column representation types}
+\label{tab:exprlang:exprlang_1}
+\end{table}
