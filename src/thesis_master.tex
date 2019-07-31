@@ -43,6 +43,11 @@
 \usepackage{amsthm}
 \newtheorem{theorem}{Theorem}
 \usepackage{multirow}
+\usepackage[shortlabels]{enumitem}
+\usepackage{lipsum}
+
+% \setlist{nosep}
+\setlist{noitemsep}
 
 % https://www.overleaf.com/learn/latex/Code_listing
 \usepackage{listings}
@@ -94,13 +99,13 @@
 
 \begin{center}
 
-Vrije Universiteit Amsterdam \hspace*{2cm} Universiteit van Amsterdam
+Vrije Universiteit Amsterdam \hspace*{2cm} Centrum Wiskunde \& Informatica
 
 \vspace{1mm}
 
 \hspace*{-7.5cm}\includegraphics[height=25mm]{0_frontmatter/figures/vu-griffioen.pdf}
 
-\vspace*{-2cm}\hspace*{7.5cm}\includegraphics[height=15mm]{0_frontmatter/figures/uva_logo.jpg}
+\vspace*{-2cm}\hspace*{7.5cm}\includegraphics[height=15mm]{0_frontmatter/figures/cwi-logo.png}
 
 \vspace{2cm}
 
@@ -109,28 +114,29 @@ Vrije Universiteit Amsterdam \hspace*{2cm} Universiteit van Amsterdam
 \vspace*{1.5cm}
 
 \rule{.9\linewidth}{.6pt}\\[0.4cm]
-{\huge \bfseries Title of the Thesis\par}\vspace{0.4cm}
+{\huge \bfseries Self-learning Whitebox Compression\par}\vspace{0.4cm}
 \rule{.9\linewidth}{.6pt}\\[1.5cm]
 
 \vspace*{2mm}
 
 {\Large
 \begin{tabular}{l}
-{\bf Author:} ~~student name ~~~~ (student number)
+{\bf Author:} ~~Bogdan Ghiță ~~~~ (2639139)
 \end{tabular}
 }
 
 \vspace*{2cm}
 
 \begin{tabular}{ll}
-{\it 1st supervisor:}   & ~~supervisor name \\
-{\it daily supervisor:} & ~~supervisor name ~~~~ (company, if applicable) \\
-{\it 2nd reader:}       & ~~supervisor name
+{\it 1st supervisor:}   & ~~Peter Boncz \\
+{\it daily supervisor:} & ~~Peter Boncz \\
+{\it 2nd supervisor:} & ~~Diego Tomé \\
+{\it 2nd reader:}       & ~~Hannes Mühleisen
 \end{tabular}
 
 \vspace*{2.5cm}
 
-\textit{A thesis submitted in fulfillment of the requirements for\\ the joint UvA-VU Master of Science degree in Computer Science}
+% \textit{A thesis submitted in fulfillment of the requirements for\\ the joint UvA-VU Master of Science degree in Computer Science}
 
 \vspace*{1.8cm}
 
@@ -163,9 +169,9 @@ Vrije Universiteit Amsterdam \hspace*{2cm} Universiteit van Amsterdam
 
 %: ----------------------- generate cover page ------------------------
 
-\begin{center}
-\textit{``I am the master of my fate, I am the captain of my soul'' \\ from {\em Invictus}, by William Ernest Henley}
-\end{center}
+% \begin{center}
+% \textit{``I am the master of my fate, I am the captain of my soul'' \\ from {\em Invictus}, by William Ernest Henley}
+% \end{center}
 
 %: ----------------------- cover page back side ------------------------
 % Your research institution may require reviewer names, etc.

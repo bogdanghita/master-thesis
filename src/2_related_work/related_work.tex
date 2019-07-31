@@ -1,7 +1,8 @@
 % this file is called up by thesis.tex
 % content in this file will be fed into the main document
 
-\chapter{Related work} % top level followed by section, subsection
+\chapter{Related work}
+\label{ch:relatedwork}
 
 
 % ----------------------- paths to graphics ------------------------
@@ -27,7 +28,25 @@ The closest work to our research is \cite{raman2006wring}, where Raman et al. ex
 
 Damme et al. \cite{damme2017lightweight} performed an exhaustive evaluation of existing compression algorithms and concluded that compression rates are highly dependent on the properties of the data and that combinations of multiple techniques lead to the best results. These results support our reasons for better understanding the data and chaining elementary operators into complex compression trees and encourage us to see how our white-box approach affects both compression rates and query execution time.
 
-Additionally, while most compression solutions proposed so far were mainly evaluated and compared to each other on synthetic benchmarks \cite{abadi2006integrating,zukowski2006super,lee2014joins,lang2016data,raman2013db2}, we are the first to use such a comprehensive user generated dataset as the Public BI benchmark \cite{pbib}. Two examples of benchmarks used for evaluating database compression and compressed execution are TPC-H \cite{boncz2013tpc} and its successor TPC-DS \cite{nambiar2006making}. Both are synthetic and do not reflect the nature of real data. The Public BI benchmark contains 422 GB of data and 900 analytics queries available on Tableau Public \cite{vogelsgesang2018get, tableaupublic}. The large volume of data, it’s diversity in content and the extended character set make it suitable for evaluating compression solutions.
+Additionally, while most compression solutions proposed so far were mainly evaluated and compared to each other on synthetic benchmarks \cite{abadi2006integrating,zukowski2006super,lee2014joins,lang2016data,raman2013db2}, we are the first to use such a comprehensive user generated dataset as the Public BI benchmark \cite{pbib}. Two examples of benchmarks used for evaluating database compression and compressed execution are TPC-H \cite{boncz2013tpc} and its successor TPC-DS \cite{nambiar2006making}. Both are synthetic and do not reflect the nature of real data. The Public BI benchmark contains 386 GB of data and 905 analytics queries available on Tableau Public \cite{vogelsgesang2018get, tableaupublic}. The large volume of data, it’s diversity in content and the extended character set make it suitable for evaluating compression solutions.
+
+% ------------ contributions ------------ %
+
+\newpage
+\section{Contributions}
+
+This thesis brings the following contributions:
+\begin{enumerate}[1)]
+\item Public BI benchmark analysis---an analysis of real user-generated data from the perspective of compression
+\item \textit{whitebox compression}---a new generic, extensible, recursive and transparent compression model for columnar databases, which achieves higher compression ratios by representing data more compactly through elementary operator expressions and creates opportunities for faster query execution
+\item learned compression---automatic identification of patterns in the data \& generation of compression trees: multiple pattern detectors, a cost model and compression learning algorithms
+\end{enumerate}
+
+% Our work will consist in defining, implementing and evaluating a \emph{whitebox compression} framework. We will invent an expression language and \emph{learn} expressions from the data during bulk loading. To achieve this we will need to overcome multiple challenges.
+
+% The first challenge is finding the characteristics of our dataset that makes it different from synthetic data. While generating table-level statistics is trivial, we need to go further and determine common patterns that can benefit from compression, find suitable operators and combine them to form expressions (compression trees). Moreover, these expressions should facilitate compressed execution.
+
+% A second challenge will be to automatically learn and generate the best compression tree for each column, while data is loaded or inserted. We expect to find values that do not comply to the patterns we want to exploit (i.e. exceptions from the rule). We will need to find ways to efficiently deal with these exceptions, in terms of writing them to disk without affecting the compression ratio and reading them back without impacting query execution time.
 
 
 

@@ -5,7 +5,7 @@
 %\begin{abstractslong}    %uncommenting this line, gives a different abstract heading
 \begin{abstracts}        %this creates the heading for the abstract page
 
-Here goes the abstract of this thesis.
+Existing columnar database systems rely on a small set of lightweight compression techniques to achieve smaller data size and fast query execution: RLE, DICT, FOR, DELTA and their improved versions. These are hardcoded blackbox approaches with limited capacity of exploiting all compression opportunities present in real data. We propose \textit{whitebox compression}: a new compression model which represents data through elementary operator expressions automatically generated at bulk load. This is done by learning patterns from the data and associating them with operators to form expression trees, which are stored together with the compressed data and lazily evaluated during query execution. \textit{Whitebox compression} automatically finds and exploits compression opportunities, leading to transparent, recursive and more compact representations of the data. Combined with vectorized execution or JIT code generation, it has the potential to generate powerful compression schemes in terms of both compression ratio and query execution time. Our focus is on real data rather than synthetic datasets, thus we develop and evaluate the \textit{whitebox compression} model using the Public BI benchmark---a comprehensive human generated benchmark for database systems.
 \end{abstracts}
 %\end{abstractlongs}
 
