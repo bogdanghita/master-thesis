@@ -100,7 +100,7 @@ where:
 \subsubsection{Dictionary estimator}
 \label{subsub:estimator:dict}
 
-The \nameref{subsub:estimator:dict} predicts the size of the input column as compressed with Dictionary encoding. Besides the two samples, it receives an additional parameter: \(size_{max}\)---maximum size of the dictionary (in bytes). It only works on \verb|VARCHAR| columns and therefore the exception column will also be \verb|VARCHAR|.
+The \nameref{subsub:estimator:dict} predicts the size of the input column as compressed with Dictionary encoding. Besides the two samples, it receives an additional parameter: \(size_{max}\)---maximum size of the dictionary (in bytes). It only applies to \verb|VARCHAR| columns and therefore the exception column will also be \verb|VARCHAR|.
 
 The \nameref{subsub:estimator:dict} is similar to the \nameref{subsec:pd:dict} pattern detector defined in \ref{subsec:pd:dict}. It builds the dictionary and handles exceptions in the same way. Optimizing the dictionary based on a maximum size (in bytes) also works for the estimator, since we use it to compare different ways of compressing a column and the dominant factor here is the nature of the data, not the optimization of the compression scheme. 
 
@@ -126,7 +126,7 @@ where:
 size_{data} = \frac{count_{valid} \times bits_{id}}{8}
 \end{equation}
 
-\(size_{ex}\) is computed by adding the size of all exceptions.
+\(size_{ex}\) is computed by summing the size of all exceptions.
 
 \(size_{null}\) is determined by the number of resulting physical columns: one for compressed data (dictionary ids) and one for exceptions:
 \begin{equation}
@@ -176,7 +176,7 @@ where:
 \subsubsection{Frame of Reference estimator}
 \label{subsub:estimator:for}
 
-The \nameref{subsub:estimator:for} predicts the size of the input column as compressed with FOR. It only works on numeric columns.
+The \nameref{subsub:estimator:for} predicts the size of the input column as compressed with FOR. It only applies to numeric columns.
 
 \textbf{Training phase.} FOR metadata is composed of: 1) the \textit{reference} value and 2) the number of bits needed to store the differences (\(bits_{\mathit{diff}}\)). In our implementation we chose the \textit{reference} to be the smallest value in the \textit{train} sample. \(bits_{\mathit{diff}}\) is given by the maximum difference size, which depends on the data type representation.
 

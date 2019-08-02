@@ -1,27 +1,59 @@
 % this file is called up by thesis.tex
 % content in this file will be fed into the main document
 
-%: ----------------------- name of chapter  -------------------------
-\chapter*{Appendix} % top level followed by section, subsection
+% --------- begin appendices --------- %
 
+\begin{appendices}
 
 %: ----------------------- paths to graphics ------------------------
 
-% change according to folder and file names
-\ifpdf
-    \graphicspath{{X/figures/PNG/}{X/figures/PDF/}{X/figures/}}
-\else
-    \graphicspath{{X/figures/EPS/}{X/figures/}}
-\fi
+\graphicspath{{9_appendix/images/}}
 
 %: ----------------------- contents from here ------------------------
-\includepdf[pages=1-5]{CodesTable} 
-\includepdf[pages=1-4]{InterviewQuestions}
 
+
+% --------- ngram analysis --------- %
+
+\chapter{n-gram frequency analysis}
+\label{appendix:ngramanalysis}
+
+During our analysis of the Public BI benchmark we noticed several \verb|VARCHAR| columns containing strings that are concatenations of data from different distributions. These columns can be stored more efficiently in separate subcolumns, in order to allow independent compression of their constituent parts. We approached this problem with the \nameref{subsec:pd:charsetsplit} pattern detector (\ref{subsec:pd:charsetsplit}) and obtained good results, but we did not cover all the variations of such columns. Table~\ref{tab:appendix:ngramanalysis:table1} shows two samples of data from columns that have this property but we did not cover.
+
+\input{9_appendix/appendix-table_1.tex}
+
+Both columns are composed of two parts: one with high repetition factor---which can benefit from compression---and one rather unique---which cannot. They are separated by a delimiter character: \verb|'@'|, respectively \verb|'-'|. While the \nameref{subsec:pd:charsetsplit} could cover these columns with a delimiter character set (e.g. \verb|[@-]|), there are also cases with no explicit separator character but other structures instead (e.g. fixed number of characters from the start of each string). 
+
+To cover all cases in a more generic way, we tried to develop a different approach based on n-gram frequencies. We represented each string in a different way, such that we can identify its constituent substrings more easily, as follows: 1) we computed the frequencies of all 3-grams based on their number of occurrences on the entire column; 2) we replaced each character in each string with the frequency of the 3-gram starting at the position of the character. The results are presented in Figures \ref{fig:appendix:ngramanalysis:ngram_1} and \ref{fig:appendix:ngramanalysis:ngram_2}.
+
+\begin{figure}[h]
+  \centering
+  \makebox[\textwidth][c]{
+    \includesvg[width=0.95\linewidth]{ngram-col_28.svg}
+  }
+  \caption{\textit{ds\_email} 3-gram frequencies}
+  \label{fig:appendix:ngramanalysis:ngram_1}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \makebox[\textwidth][c]{
+    \includesvg[width=0.95\linewidth]{ngram-col_30.svg}
+  }
+  \caption{\textit{ds\_tipo\_beneficiario} 3-gram frequencies}
+  \label{fig:appendix:ngramanalysis:ngram_2}
+\end{figure}
+
+The figures show the frequency of the 3-grams in the strings in the two columns presented above (larger samples than in the example). The Y axis represents each string on the column and the X axis contains the positions of the characters in the strings. The colors represent the frequencies: white = high frequency, red = low frequency. Black is used as padding for shorter strings. Figure~\ref{fig:appendix:ngramanalysis:ngram_1} shows the results for the \textit{ds\_email} column. We notice how all the emails start with low frequencies (the local/username part) and end with high frequencies (the domain part). Moreover, we can also observe the different components of the domain: we have the top level domains with the highest frequencies (e.g. \verb|.com|, \verb|.br|, etc.), followed by the subdomains (e.g. \verb|gmail|, \verb|hotmail|, etc.). Even more, the word \verb|"mail"| is also representative in itself, since it is common for most email subdomains. Figure~\ref{fig:appendix:ngramanalysis:ngram_2} shows the results for the \textit{ds\_tipo\_beneficiario} column. It is clear how the majority of the strings start with the frequent substring \verb|"Outro: especificar"| and end in a low frequency substring.
+
+The 3-gram frequency representation emphasizes the constituent subparts in which a column should be split in order to enable independent compression. The goal is to automatically find the split points, which is not a trivial task. The approach that we propose relies on the fact that we can view each string as a series of numbers (3-gram frequencies). The series contain edges and plateaus. An edge is a significant increase or decrease in frequency. After identifying the edges in each string, we need to find the common edges amongst the majority of the strings. A common edge is an edge that can be identified either by the same character (e.g. the \verb|'@'| delimiter) or by the same absolute position in all the strings. Once we found the common edges, we define the split points based on the character or position. During compression, we split each string according to these identifiers and mark as exception the values that cannot be split.
+
+Due to time constraints, we decided not to proceed with the implementation and evaluation of this approach and leave it for future work.
+
+% --------- notes --------- %
 
 \iffalse
 - interesting results:
-  - correlation graphs & heatmaps
+  - correlation graphs \& heatmaps
   - pattern distribution
   - n-gram analysis
   - other plots that you already have
@@ -39,6 +71,9 @@ RealEstate2\_1 - not good with used either
 \fi
 
 
+% --------- end appendices --------- %
+
+\end{appendices}
 
 % ---------------------------------------------------------------------------
 %: ----------------------- end of thesis sub-document ------------------------

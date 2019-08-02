@@ -9,9 +9,9 @@
 % ----------------------- contents from here ------------------------
 % 
 
-The focus of this thesis is reducing the size of the data through \textit{whitebox compression} as a data representation model. Therefore, our main evaluation metric will be the \textit{compression ratio}. In terms of benchmarks, we evaluate our system on the Public BI benchmark (Chapter~\ref{ch:pbib}), as we target real---user-generated---data rather than synthetic data. The datasets in the benchmark are available as CSV files.
+The focus of this thesis is reducing the size of the data through \textit{whitebox compression} as a data representation model. Therefore, our main evaluation metric will be the \textit{compression ratio}. In terms of benchmarks, we evaluate our system on the Public BI benchmark (Chapter~\ref{ch:pbib}), as we target real, user-generated data rather than synthetic data. The datasets in the benchmark are available as CSV files.
 
-We use 2 baselines that we compare against: 1) a real system with enhanced compression capabilities: VectorWise \cite{zukowski2012vectorwise}; 2) a compression estimator model (defined in \ref{subsec:eval:methodology:estimator}). We aim at showing the improvement brought by \textit{whitebox compression} as an enhancement of existing systems: an intermediate data representation layer that remodels the data to create better compression opportunities for existing lightweight methods. For this reason we evaluate \textit{whitebox compression} as an intermediate layer preceding these methods, instead of a stand-alone system. The following sections present the sampling method that we used for the automatic learning process and the methodology for the 2 baselines.
+We compare our implementation against two baselines: 1) a real system with enhanced compression capabilities: VectorWise \cite{zukowski2012vectorwise}; 2) a compression estimator model (defined in \ref{subsec:eval:methodology:estimator}). We aim at showing the improvement brought by \textit{whitebox compression} as an enhancement of existing systems: an intermediate data representation layer that remodels the data to create better compression opportunities for existing lightweight methods. For this reason we evaluate \textit{whitebox compression} as an intermediate layer preceding these methods, instead of a stand-alone system. The following sections present the sampling method that we used for the automatic learning process and the methodology for the two baselines.
 
 \iffalse
 good words: "prior to"
@@ -29,7 +29,7 @@ To satisfy these requirements we defined a sampling technique that selects block
 
 An additional requirement imposed by some pattern detectors is that the sample data fits in memory. To ensure this, our sampling tool can also receive a maximum size in bytes, from which it derives the \(count_{sample}\) and \(count_{block}\) parameters. This calculation is based on estimating the average size of a row.
 
-TODO-1: [?] image describing the sampling process
+% TODO-1: [?] image describing the sampling process
 
 
 % ------- vectorwise baseline ------- %
@@ -37,9 +37,9 @@ TODO-1: [?] image describing the sampling process
 \subsection{VectorWise baseline}
 \label{subsec:eval:methodology:vectorwise}
 
-We chose VectorWise as a baseline for its enhanced compression capabilities. It uses patched versions of well known lightweight compression methods: PDICT, PFOR, PFOR-DELTA \cite{zukowski2006super}. The compression engine is similar to ours to some extent: the decision upon which compression method to use is based on analyzing a sample of the data. VectorWise handles each column separately and it has the capability of independently compressing blocks of data with different methods instead of the full column.
+We chose VectorWise as a baseline for its enhanced compression capabilities. It uses patched versions of well known lightweight compression methods: PDICT, PFOR, PFOR-DELTA \cite{zukowski2006super}. The compression engine is similar to ours to some extent: the decision upon which compression method to use is based on analyzing a sample of the data. VectorWise handles each column separately and has the capability of independently compressing blocks of data with different methods instead of the full column.
 
-TODO-1: [?] more details about VectorWise
+% TODO-1: [?] more details about VectorWise
 
 Our evaluation methodology is based on comparing the size on disk of: 1) uncompressed data (\(size_{uncompressed}\)), 2) blackbox-compressed data with VectorWise (\(size_{blackbox}\)) and 3) whitebox-compressed data further compressed with VectorWise (\(size_{whitebox}\)). From these sizes we can derive the compression ratios:
 \begin{align}
@@ -48,8 +48,6 @@ Our evaluation methodology is based on comparing the size on disk of: 1) uncompr
     \mathit{ratio_{whitebox}} = \frac{size_{uncompressed}}{size_{whitebox}}
 \end{align}
 
-The evaluation architecture is depicted in Figure~\ref{fig:eval:methodology:vectorwisebaseline}.
-
 \begin{figure}[h]
   \centering
   \includegraphics[width={0.98\linewidth}]{baseline_architectures_1-vectorwise_1.pdf}
@@ -57,7 +55,7 @@ The evaluation architecture is depicted in Figure~\ref{fig:eval:methodology:vect
   \label{fig:eval:methodology:vectorwisebaseline}
 \end{figure}
 
-\(size_{uncompressed}\) is computed by loading the input data into VectorWise with compression disabled. \(size_{blackbox}\) is the size of the data loaded into VectorWise with default compression options. \(size_{whitebox}\) is computed by: 1) feeding the input data to the \textit{whitebox compression} engine, resulting in a new representation of it, then 2) loading the new data into VectorWise with default compression options. The \textit{whitebox compression} engine learns a compression tree based on a sample and then evaluates it on the input data to materialize the new representation. The additional compression step with VectorWise applies existing blackbox compression schemes on the new representation of the data. The purpose of this 2-step compression process is to isolate and measure the capacity of \textit{whitebox compression} to create better opportunities for existing lightweight compression schemes.
+The evaluation architecture is depicted in Figure~\ref{fig:eval:methodology:vectorwisebaseline}. \(size_{uncompressed}\) is computed by loading the input data into VectorWise with compression disabled. \(size_{blackbox}\) is the size of the data loaded into VectorWise with default compression options. \(size_{whitebox}\) is computed by: 1) feeding the input data to the \textit{whitebox compression} engine, resulting in a new representation of it, then 2) loading the new data into VectorWise with default compression options. The \textit{whitebox compression} engine learns a compression tree based on a sample and then evaluates it on the input data to materialize the new representation. The additional compression step with VectorWise applies existing blackbox compression schemes on the new representation of the data. The purpose of this 2-step compression process is to isolate and measure the capacity of \textit{whitebox compression} to create better opportunities for existing lightweight compression schemes.
 
 We determine the size of each table by inspecting the raw data files resulted after the bulk loading process. When computing \(size_{uncompressed}\) and \(size_{blackbox}\) we consider the total size of the data files associated with each table, which include the compressed values, exceptions and metadata. For \(size_{whitebox}\) we get the size of all physical columns (including the exception columns) from VectorWise's data files and estimate the size of the metadata in the same way we do in \ref{sub:estimators}~\nameref{sub:estimators}.
 
@@ -83,8 +81,6 @@ We created an alternative evaluation baseline in addition to the VectorWise one:
 \end{figure}
 
 \(size_{uncompressed}\) is computed by estimating the uncompressed size of the input data with the \nameref{subsub:estimator:nocompression}. \(size_{lightweight}\) is the smallest size given by the compression estimators: \nameref{subsub:estimator:dict}, \nameref{subsub:estimator:rle}, \nameref{subsub:estimator:for}, \nameref{subsub:estimator:nocompression}. \(size_{whitebox}\) is computed by first representing the input data through \textit{whitebox compression} and then feeding it to the estimator model.
-
-TODO-1: [?] more details \& in-depth explanation
 
 % ---------------------------------------------------------------------------
 % ----------------------- end of thesis sub-document ------------------------

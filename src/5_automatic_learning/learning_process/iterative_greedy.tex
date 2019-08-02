@@ -80,9 +80,9 @@ where:
 \end{itemize}
 In the worst case when the maximum number of iterations is reached, \(h_{max}\) becomes \(it_{max}\), thus the complexity is bounded by \(it_{max}\).
 
-Regardless of the nature of the pattern selector \(S\), the algorithm is greedy, as it makes irreversible locally best choices which only depend on previously made choices. The breadth-first approach allows the use of multi-column pattern detectors, representing an advantage compared to the \nameref{sub:learning:recursiveexhaustive} algorithm, which misses compression opportunities by handling each column separately. The greedy model significantly reduces the number of solutions explored, leading only to a locally best solution. At the same time, the reduced dimension of the explored solution set ensures faster termination of the algorithm. The advantages of both algorithms can be combined with the \nameref{sub:learning:multistage} approach described in section \ref{sub:learning:multistage}.
+Regardless of the nature of the pattern selector \(S\), the algorithm is greedy, as it makes irreversible locally best choices which only depend on previously made choices. The breadth-first approach allows the use of multi-column pattern detectors, representing an advantage compared to the \nameref{sub:learning:recursiveexhaustive} algorithm, which misses compression opportunities by handling each column separately. The greedy model significantly reduces the number of solutions explored, leading only to a local best solution. At the same time, the reduced dimension of the explored solution set ensures faster termination of the algorithm. The advantages of both algorithms can be combined with the \nameref{sub:learning:multistage} approach described in section \ref{sub:learning:multistage}.
 
-TODO-1: image describing the iterative process
+% TODO-1: image describing the iterative process
 
 % ---------------------------------------------------------------------------
 % ----------------------- end of thesis sub-document ------------------------

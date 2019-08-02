@@ -13,9 +13,10 @@
 
 The Public BI benchmark \cite{pbib} is a user-generated benchmark for database systems derived from the DBTest'18 paper by Tableau \cite{vogelsgesang2018get}. It contains 386GB of real data and 905 analytics queries. The data distributions, diversity in content and the extended character set make it suitable for evaluating compression solutions.
 
-The benchmark was created by downloading 46 of the biggest workbooks from Tableau Public \cite{tableaupublic} and converting the data to CSV files. The SQL queries were collected from the Tableau logs that appear when visualizing the workbooks. We processed the CSV files with the purpose of making them load into different database systems. The queries contained Tableau-specific functions and syntax. We processed and adapted them in order to run on MonetDB \cite{boncz2005monetdb} and VectorWise \cite{zukowski2012vectorwise}. The presentation of the Public BI benchmark creation process is not in the scope of this thesis and will not be further discussed here.
+The benchmark was created by downloading 46 of the biggest workbooks from Tableau Public \cite{tableaupublic} and converting the data to CSV files. The SQL queries were collected from the Tableau logs that appear when visualizing the workbooks. We processed the CSV files with the purpose of making them load into different database systems. The queries contained Tableau-specific functions and syntax. We processed and adapted them in order to run on MonetDB \cite{boncz2005monetdb} and VectorWise \cite{zukowski2012vectorwise}. 
+% The presentation of the Public BI benchmark creation process is not in the scope of this thesis and will not be further discussed here.
 
-TODO-1: document the creation process in the appendix (if there is time)
+% TODO-1: document the creation process in the appendix (if there is time)
 
 This chapter presents a characterisation of the Public BI benchmark that we did with the purpose of understanding what real data looks like and finding opportunities for more compact data representation. This analysis was performed solely from the perspective of compression. We did not analyze entities, relationships or the queries.
 

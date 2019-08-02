@@ -10,7 +10,7 @@
 
 We ran our experiments on a selection of 53 tables from the Public BI benchmark \cite{pbib}. The selection is made based on the observation that tables with the same schema have very similar data and sometimes are almost identical. Therefore, we only kept one table for each unique schema. We further removed a few more tables containing columns that could not be matched with the VectorWise data files because multiple columns are stored in the same file.
 
-TODO-1: add more info about the selected tables (e.g. total size, appendix with tables \& details about them: size, number of rows, number of columns).
+% TODO-1: add more info about the selected tables (e.g. total size, appendix with tables \& details about them: size, number of rows, number of columns).
 
 We configured our sampling tool to take samples of maximum 10MB with sequences of 64 consecutive rows. This resulted in samples of 20K rows on average and not less than 4K rows.
 
@@ -36,7 +36,7 @@ It selects between expression nodes in the same priority class with the \nameref
 
 The compression estimators do not require additional parameters, excepting the \nameref{subsub:estimator:dict}, which uses the same maximum dictionary size as the \nameref{subsec:pd:dict} pattern detector: \(size_{max} = 64K\).
 
-TODO-2: add configuration and results for the \nameref{sub:learning:recursiveexhaustive}
+% TODO-2: add configuration and results for the \nameref{sub:learning:recursiveexhaustive}
 
 % ---------------------------------------------------------------------------
 % ----------------------- end of thesis sub-document ------------------------

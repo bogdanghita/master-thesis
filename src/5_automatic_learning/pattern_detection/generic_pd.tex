@@ -9,7 +9,7 @@
 % ----------------------- contents from here ------------------------
 % 
 
-The purpose of a generic pattern detector is to serve as an interface in the pattern detection and compression learning processes. Given a sample of data and its schema, an instance of a generic pattern detector searches for the presence of the pattern it's specialized in.  For each column that matches the pattern, it outputs metrics and metadata that will be further used in the learning phase and during compression. This generic design allows new pattern detectors to be easily tested and integrated into the system without modifying other parts of it (e.g. the learning or compression processes). This section presents the characteristics of the generic pattern detector interface, while specialized implementations of it are described in the next sections.
+The purpose of a generic pattern detector is to serve as an interface in the pattern detection and compression learning processes. Given a sample of data and its schema, an instance of a generic pattern detector searches for the presence of the pattern it is specialized in.  For each column that matches the pattern, it outputs metrics and metadata that will be further used in the learning phase and during compression. This generic design allows new pattern detectors to be easily tested and integrated into the system without modifying other parts of it (e.g. the learning or compression processes). This section presents the characteristics of the generic pattern detector interface, while specialized implementations of it are described in the next sections.
 
 The pattern detection process works in 3 phases: Phase-1: \textit{initialization}---initializes the pattern detector and creates the data structures that will be used in the next phases; Phase-2: \textit{scanning}---scans the sample of data and gathers information and metrics about values in the sample. Phase-3: \textit{evaluation}---aggregates the information gathered in the \textit{scanning} phase and produces an evaluation result.
 
@@ -32,7 +32,7 @@ Each \textit{(expression node, evaluation result)} tuple represents a possibilit
 
 \textbf{Operators.} Each pattern detector provides a \textit{compression operator} and a \textit{decompression operator}. They are used in the compression and respectively decompression phase to evaluate the nodes in the expression trees. The generic operator is described in \ref{ch:exprlang}~\nameref{ch:exprlang} while the pattern-specific implementations can be found in the corresponding section of each pattern detector.
 
-TODO-1: image describing the input and output of the generic pattern detector
+% TODO-1: image describing the input and output of the generic pattern detector
 
 % ---------------------------------------------------------------------------
 % ----------------------- end of thesis sub-document ------------------------

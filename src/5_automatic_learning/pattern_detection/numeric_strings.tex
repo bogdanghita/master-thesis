@@ -24,7 +24,7 @@ Step-3: extract the \textit{prefix} and \textit{suffix} and store them as format
 
 \input{5_automatic_learning/pattern_detection/numeric_strings-table_1}
 
-We do not support and consider exceptions the following: 1) numbers in scientific notation; 2) other notations or abbreviations (e.g. \verb|.12| instead of \verb|0.12|, \verb|1_000_000| instead of \verb|1000000|, etc.).
+We do not support---and consider exceptions---the following: 1) numbers in scientific notation; 2) other notations or abbreviations (e.g. \verb|.12| instead of \verb|0.12|, \verb|1_000_000| instead of \verb|1000000|, etc.).
 
 \textbf{Data type inference.} The purpose of this pattern detector is to store the numeric string values in a numeric column, which requires a numeric data type. We chose two data types that can be used to represent all numbers: \verb|DECIMAL(p,s)| and \verb|DOUBLE|. During the \textit{scanning} phase all \(v_{numeric}\) values are interpreted as decimals. The maximum number of digits before and after the decimal point---\(\mathit{integer}_{dmax}\) and \(\mathit{fractional}_{dmax}\)---are determined.  In the \textit{evaluation} phase, the parameters \textit{p} (precision) and \textit{s} (scale) of the \verb|DECIMAL(p,s)| data type are computed as follows:
 \begin{equation}
