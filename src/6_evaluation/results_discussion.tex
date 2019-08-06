@@ -159,6 +159,57 @@ Finally, Figure~\ref{fig:eval:results:exprntypedistribution} shows the distribut
 
 The take-away message from this analysis is that we can represent many logical columns---mostly \verb|VARCHAR|---as functions of fewer physical columns---mostly numeric---at the expense of many exception columns---mostly nulls---and achieve high compression ratios---all of this automatically learned.
 
+% ------------ analysis ------------ %
+
+\subsection{Recursive exhaustive learning results}
+\label{subsec:eval:results:recursiveexhaustive}
+
+\input{6_evaluation/results_discussion_rec_exh-table_1.tex}
+
+\begin{figure}[h]
+  \centering
+  \makebox[\textwidth][c]{
+  \begin{subfigure}[t]{0.6\linewidth}
+    \centering
+    \includegraphics[width=1\linewidth]{6_evaluation/images/rec_exh/used_datatypes.pdf}
+    \caption[b]{Logical columns (used)}
+    \label{fig:eval:results:recexh:useddatatypes}
+  \end{subfigure}
+%   \hspace{1em}
+  \begin{subfigure}[t]{0.6\linewidth}
+    \centering
+    \includegraphics[width=1\linewidth]{6_evaluation/images/rec_exh/out_datatypes.pdf}
+    \caption[b]{Physical columns}
+    \label{fig:eval:results:recexh:outdatatypes}
+  \end{subfigure}
+  }
+  \caption{Column datatype distribution (recursive exhaustive learning)}
+  \label{fig:eval:results:recexh:columndatatypes}
+\end{figure}
+
+\input{6_evaluation/results_discussion_rec_exh-table_2.tex}
+
+\begin{figure}[h]
+\centering
+\makebox[\textwidth][c]{
+\begin{minipage}{0.55\textwidth}
+  \centering
+  \includegraphics[width={1.0\linewidth}]{6_evaluation/images/rec_exh/out_size_distribution.pdf}
+  \caption{Physical size distribution (recursive exhaustive learning)}
+  \label{fig:eval:results:recexh:outsizedistribution}
+\end{minipage}
+% \hspace{1em}
+\begin{minipage}{0.55\textwidth}
+  \centering
+  \includegraphics[width={1.0\linewidth}]{6_evaluation/images/rec_exh/expr_n_types.pdf}
+  \caption{Expression node types distribution (recursive exhaustive learning)}
+  \label{fig:eval:results:recexh:exprntypedistribution}
+\end{minipage}
+}
+\end{figure}
+
+\input{6_evaluation/results_discussion_rec_exh-table_3.tex}
+
 % TODO-2: new subsection about decompression implementation to validate input data reconstruction
 
 % ---------------------------------------------------------------------------
