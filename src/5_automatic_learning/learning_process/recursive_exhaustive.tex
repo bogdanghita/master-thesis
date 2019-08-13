@@ -77,7 +77,7 @@ def apply_N(c_in, N, T_in, P_list, E_list):
 The complexity of the algorithm can be described as:
 \begin{equation}
 \label{eq:learning:recursiveexhaustive:single}
-    (p \times \mathit{avg}(n_{p}) \times b) ^ {h_{max}}
+    \mathcal{O}((p \times \mathit{avg}(n_{p}) \times b) ^ {h_{max}})
 \end{equation}
 where:
 \begin{itemize}
@@ -89,14 +89,14 @@ where:
 The height is bounded by the \(h_{max}\) parameter. Despite the high complexity, the size of the problem remains relatively small due to the high selectivity of the pattern detectors \(P\) (see \textit{select\_column} in \ref{sec:pd}~\nameref{sec:pd}). This is the complexity of learning the compression tree for a single column, while for multiple columns the complexity becomes:
 \begin{equation}
 \label{eq:learning:recursiveexhaustive:multi}
-    c_{in} \times (p \times \mathit{avg}(n_{p}) \times b) ^ {h_{max}}
+    \mathcal{O}(c_{in} \times (p \times \mathit{avg}(n_{p}) \times b) ^ {h_{max}})
 \end{equation}
 where:
 \begin{itemize}
     \item[] \(c_{in}\) = number of input columns
 \end{itemize}
 
-This complexity is significantly better than the complexity of the general optimization problem described in \ref{subsec:learningprocess:optimizationproblem} (\(2^n\), where \(n\) is the total number of expression nodes generated in the learning process, as described in Equation~\ref{eq:optimizationproblem:n}). The reason for this improvement is the single-column approach---not considering pattern detectors \(P\) that combine multiple columns. The solutions of a column \(c_{i}\) do not depend on the solutions of other columns \(c_{j}\) that are not on the path from \(c_{i}\) to its root input column \(c_{r}\). This is because a choice made for \(c_{j}\) does not influence the choices that can be made for \(c_{i}\).
+This complexity is significantly better than the complexity of the general optimization problem described in \ref{subsec:learningprocess:optimizationproblem} (\(\mathcal{O}(2^n)\), where \(n\) is the total number of expression nodes generated in the learning process, as described in Equation~\ref{eq:optimizationproblem:n}). The reason for this improvement is the single-column approach---not considering pattern detectors \(P\) that combine multiple columns. The solutions of a column \(c_{i}\) do not depend on the solutions of other columns \(c_{j}\) that are not on the path from \(c_{i}\) to its root input column \(c_{r}\). This is because a choice made for \(c_{j}\) does not influence the choices that can be made for \(c_{i}\).
 This property allows a depth-first exploration of the solutions, significantly reducing the complexity.
 
 However, there is a cost for not considering multi-column pattern detectors: the algorithm misses compression opportunities (e.g. one column represented as a function of another through \nameref{subsec:pd:columncorrelation}). It is exhaustive and yet cannot produce the best result. Section \ref{sub:learning:iterative}~\nameref{sub:learning:iterative} presents a greedy approach that considers multi-column patter detectors. Moreover, the \nameref{sub:learning:multistage} in section \ref{sub:learning:multistage} addresses this issue by chaining together multiple learning algorithms.

@@ -11,14 +11,17 @@
 % ----------------------- contents from here ------------------------
 % 
 
-The Public BI benchmark \cite{pbib} is a user-generated benchmark for database systems derived from the DBTest'18 paper by Tableau \cite{vogelsgesang2018get}. It contains 386GB of real data and 905 analytics queries. The data distributions, diversity in content and the extended character set make it suitable for evaluating compression solutions.
+The Public BI benchmark \cite{pbib} is a user-generated benchmark for database systems derived from the DBTest'18 paper by Tableau \cite{vogelsgesang2018get}. It contains 386GB of real data and 646 analytics queries, available at \url{https://github.com/cwida/public_bi_benchmark} under the MIT License. The data distributions, diversity in content and the extended character set make it suitable for evaluating compression solutions.
 
-The benchmark was created by downloading 46 of the biggest workbooks from Tableau Public \cite{tableaupublic} and converting the data to CSV files. The SQL queries were collected from the Tableau logs that appear when visualizing the workbooks. We processed the CSV files with the purpose of making them load into different database systems. The queries contained Tableau-specific functions and syntax. We processed and adapted them in order to run on MonetDB \cite{boncz2005monetdb} and VectorWise \cite{zukowski2012vectorwise}. 
+The benchmark was created by downloading 46 of the biggest workbooks from Tableau Public \cite{tableaupublic} and converting the data to CSV files. The SQL queries were collected from the Tableau logs that appear when visualizing the workbooks (SQL queries to the integrated HyPer \cite{kemper2011hyper} engine). We processed the CSV files with the purpose of making them load into different database systems. The queries contained Tableau-specific functions and syntax. We processed and adapted them in order to run on MonetDB \cite{boncz2005monetdb} and VectorWise \cite{zukowski2012vectorwise}. Table~\ref{tab:pbib:workbooks} shows a summary of the benchmark.
 % The presentation of the Public BI benchmark creation process is not in the scope of this thesis and will not be further discussed here.
 
 % TODO-1: document the creation process in the appendix (if there is time)
 
-This chapter presents a characterisation of the Public BI benchmark that we did with the purpose of understanding what real data looks like and finding opportunities for more compact data representation. This analysis was performed solely from the perspective of compression. We did not analyze entities, relationships or the queries.
+This chapter presents a characterisation of the Public BI benchmark that we performed with the purpose of understanding what real data looks like and finding opportunities for more compact data representation. This analysis was performed solely from the perspective of compression. We did not analyze entities, relationships or the queries.
+
+\input{3_pbib/pbib-table_1.tex}
+\FloatBarrier
 
 \section{Benchmark analysis}
 \label{sec:pbib:characterisation}
@@ -120,11 +123,24 @@ So far we showed a general characterisation of the benchmark, mostly from a stat
     % \item social media content---e.g. usernames, personal \& contact details, posts, comments, hashtags, emoticons
     % \item extended character set---UTF-8 characters from different languages, emoticons, etc.
 
-    \item empty/missing values that are not nulls---e.g. empty quotes, whitespace characters
-    \item leading/trailing whitespace, some with the purpose of ensuring a common length of the values on \verb|VARCHAR| columns
-    \item numbers and dates stored as strings in \verb|VARCHAR| columns
-    \item strings with fixed structure composed of substrings from different distributions---e.g. strings starting with a constant and ending in a number
-    \item correlations between columns---mostly as categorical variables, but also numeric correlations; special cases: identical columns
+    \item empty/missing values that are not nulls---e.g. empty quotes, whitespace characters;\\ examples:
+    Eixo\_1\footnotemark: comunidade\_quilombola, unidade\_demandante
+    
+    \footnotetext{\url{https://github.com/cwida/public_bi_benchmark/blob/master/benchmark/Eixo/samples/Eixo\_1.sample.csv}}
+    
+    \item leading/trailing whitespace, some with the purpose of ensuring a common length of the values on \verb|VARCHAR| columns;\\ examples:
+    CommonGovernment\_1\footnotemark: contract\_num, primary\_contract\_piid
+    
+    \item numbers and dates stored as strings in \verb|VARCHAR| columns;\\ examples:
+    CommonGovernment\_1\footnotemark[\value{footnote}]: contract\_signeddate, agency\_code
+    
+    \item strings with fixed structure composed of substrings from different distributions---e.g. emails, urls, strings starting with a constant and ending in a number;\\ examples:
+    CommonGovernment\_1\footnotemark[\value{footnote}]: co\_name, contract\_num
+    
+    \item correlations between columns---mostly as categorical variables, but also numeric correlations; special cases: identical columns;\\ examples:
+    CommonGovernment\_1\footnotemark[\value{footnote}]: short\_name, ag\_name, description
+    
+    \footnotetext{\url{https://github.com/cwida/public_bi_benchmark/blob/master/benchmark/CommonGovernment/samples/CommonGovernment_1.sample.csv}}
 \end{itemize}
 
 All of these patterns are inefficient representations of the information, in terms of data storage. Some of them could have been avoided by the user (e.g. choosing the proper datatype for numeric values), while others are determined by the nature of the data itself. These patterns represent compression opportunities that cannot be exploited through existing compression schemes.

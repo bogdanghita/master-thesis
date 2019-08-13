@@ -39,7 +39,7 @@ Take for example, a logical column \verb|A| which stores email addresses. It can
 
 Figure~\ref{fig:intro:whitebox:example} illustrates the general concept of \textit{whitebox compression}. \verb|C1| and \verb|C2| are 2 logical columns represented through elementary operator expressions as functions of the physical columns \verb|C1_1| and \verb|C1_2|. The operators are, in this example: \verb|concat|, \verb|format|, \verb|map| and \verb|const|. Chained together, they form \textit{expression trees} that transparently describe the columnar transformations applied to the data. Values that do not match the expressions are stored in the exception columns \verb|C1_ex| and \verb|C2_ex|.
 
-\textit{Whitebox} representation creates compression opportunities. While in the original format, columns cannot be compressed through existing lightweight techniques, the physical columns resulting after applying the operator expressions are storing data more compactly. E.g. string columns are decomposed into subcolumns based on the different distributions of substring components and redundancy is eliminated by representing correlated columns as functions of the same physical columns. This process leads to efficient representation of the data in columns with appropriate datatypes and sparse exception columns.
+The \textit{whitebox} representation creates compression opportunities. While in the original format, columns cannot be compressed through existing lightweight techniques, the physical columns resulting after applying the operator expressions are storing data more compactly. E.g. string columns are decomposed into subcolumns based on the different distributions of substring components and redundancy is eliminated by representing correlated columns as functions of the same physical columns. This process leads to efficient representation of the data in columns with appropriate datatypes and sparse exception columns.
 
 % TODO: different example here.
 % Another example is the logical column "customer\_id" with values of the following format: "customer\_no\_\$\{x\}", where \$\{x\} is a fixed length 6 digit integer (e.g. "customer\_no\_000001", "customer\_no\_000736", etc.). We can represent this column through the expression: \emph{format("customer\_no\_\%06d", delta\_inv(\$\{x\}))}. Here we have the \emph{format} operator which takes as parameter a format string similar to the \emph{printf} function in C. The second operator is \emph{delta\_inv}, meaning the decompression function for DELTA. The corresponding compression tree is depicted in Figure \ref{fig:intro:whitebox:example}.
@@ -64,7 +64,7 @@ A \textit{blackbox compression} system takes as input a column and outputs a blo
 
 The goal of our project is to explore the concept of \emph{whitebox compression} with the purpose of finding a better way to compress human-generated data. To this end, we defined a list of scientific questions that we answer during our research.
 \begin{enumerate}[1)]
-    \item What does real user generated data look like---specifically in the case of the Public BI benchmark?
+    \item What does real, user-generated data look like---specifically in the case of the Public BI benchmark?
     \begin{enumerate}[a)]
         \item What patterns can we find in the columns of each dataset?
         \item Inefficient ways of representing data?

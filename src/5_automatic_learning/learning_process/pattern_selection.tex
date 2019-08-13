@@ -31,7 +31,7 @@ The combined coverage of 2 patterns \(p_{a}\) and \(p_{b}\) can be computed base
 The complexity of these algorithms depends on the number of patterns found on the column: \(p\). The \textit{single-pattern} operation mode and the Greedy algorithm for the \textit{multi-pattern} mode both have a linear complexity. The exhaustive algorithm has an exponential complexity, as it tries all combinations of patterns: for \(p = 10\) there are \(10^3\) bitwise \verb|OR| operations on \(r\)-bit numbers, while for \(p = 27\) this number grows to \(10^9\). Equation~\ref{eq:ps:coverage:exhaustive} shows the complexity of the exhaustive algorithm.
 \begin{equation}
 \label{eq:ps:coverage:exhaustive}
-    \sum_{k=1}^{p} {p \choose k}
+    \mathcal{O}(\sum_{k=1}^{p} {p \choose k})
 \end{equation}
 
 We implemented a basic version of the exhaustive approach for the \textit{multi-pattern} mode. To avoid the exponential running time, we default to the \textit{single-pattern} mode if the number of patterns \(p\) is larger than 20. In practice, we never encountered more than 20 different patterns on the same column, therefore, the exhaustive approach is a suitable choice.
@@ -67,7 +67,7 @@ Let \(c_{a}\), \(c_{b}\), \(c_{c}\) be three columns and let \(c_{a} \xrightarro
 Let \((v_{a}, v_{b})\) be an entry in \(m_{ab}\)---meaning: value \(v_{a}\) on column \(c_{a}\) always corresponds to value \(v_{b}\) on column \(c_{b}\)---and let \((v_{b}, v_{c})\) be an entry in \(m_{bc}\). Then, value \(v_{a}\) on column \(c_{a}\) always corresponds to value \(v_{c}\) on column \(c_{c}\). Therefore, \(\exists\) \(m_{ac}\)---a mapping containing the entry \((v_{a}, v_{c})\)---and \(c_{a} \xrightarrow{m_{ac}} c_{c}\).
 \end{proof}
 
-We define the correlation graph as follows: directed graph with one or more connected components; nodes represent columns; \textit{(src, dst)} edges represent correlations: column \textit{dst} is determined by column \textit{src}. The weight of an edge is the correlation coefficient between \textit{src} and \textit{dst}. An example of a correlation graph is shown in Figure~\ref{fig:ps:columncorrelation:corrgraph1}. The red edges represent an optimal selection in terms of the metrics and conditions described in the following paragraphs. This figure shows a simple correlation graph, but in practice we encountered much complex graphs resulted from the learning process for tables with highly correlated data.
+We define the correlation graph as follows: a directed graph with one or more connected components; nodes represent columns; \textit{(src, dst)} edges represent correlations: column \textit{dst} is determined by column \textit{src}. The weight of an edge is the correlation coefficient between \textit{src} and \textit{dst}. An example of a correlation graph is shown in Figure~\ref{fig:ps:columncorrelation:corrgraph1}. The red edges represent an optimal selection in terms of the metrics and conditions described in the following paragraphs. This figure shows a simple correlation graph, but in practice we also encountered more complex graphs resulting from the learning process for tables with highly correlated data (see Appendix~\ref{appendix:corrgraphs}).
 
 \begin{figure}[h]
   \centering
@@ -130,7 +130,7 @@ With the destination node fixed, the best edge is selected from its incoming edg
 
 The selected edge is added to \(G_{s}\) and \(G\) is updated such that constraints \textit{P1} and \textit{P2} are satisfied: the destination node, its incoming and outgoing edges and the incoming edges of the source node are removed. This process changes the degree of the nodes in \(G\) and impacts their scores.
 
-The complexity of the algorithm, as described above, is given by the number of nodes in \(G\) and their average indegree: \(N^2 \times avg(indegree)\), where \(N\) is the number of nodes. Every iteration of the \textit{while} loop selects one node from \(G\) by computing the score of all nodes. The \textit{get\_node\_score} function loops through all incoming edges of the node. If the selection of the \(dst\) node is done with a priority queue the complexity is improved: \(N \times \log(N) \times avg(indegree)\).
+The complexity of the algorithm, as described above, is given by the number of nodes in \(G\) and their average indegree: \(\mathcal{O}(N^2 \times avg(indegree))\), where \(N\) is the number of nodes. Every iteration of the \textit{while} loop selects one node from \(G\) by computing the score of all nodes. The \textit{get\_node\_score} function loops through all incoming edges of the node. If the selection of the \(dst\) node is done with a priority queue the complexity is improved: \(\mathcal{O}(N \times \log(N) \times avg(indegree))\).
 
 An alternative approach would be to relax constraint \textit{P2} and allow paths of length higher than 1. Then apply a variation of the Dijkstra's shortest paths algorithm to shorten these paths with the goal of minimizing the complexity of the graph without affecting its average correlation coefficient. However, relaxing  \textit{P2} imposes a new constraint on \(G_{s}\): it should not contain any cycles. We leave this approach for future work.
 

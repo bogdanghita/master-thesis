@@ -14,17 +14,33 @@ We ran our experiments on a selection of 53 tables from the Public BI benchmark 
 
 We configured our sampling tool to take samples of maximum 10MB with sequences of 64 consecutive rows. This resulted in samples of 20K rows on average and not less than 4K rows.
 
-In terms of the learning algorithm, we experimented with different configurations and we present the one that gave the best results---\nameref{sub:learning:multistage} (\ref{sub:learning:multistage}) with \(it_{max} = 16\) and 2 stages:
-\begin{itemize}
-    \item[\textit{Stage-1}] \nameref{sub:learning:iterative} (\ref{sub:learning:iterative}) with 4 pattern detector instances---
+In terms of the learning algorithm, we experimented with both \nameref{sub:learning:iterative} (\ref{sub:learning:iterative}) and \nameref{sub:learning:recursiveexhaustive} (\ref{sub:learning:recursiveexhaustive}). We used different configurations and we present two of them---the ones that gave the best results:
+
+\vspace{0.5em}
+\noindent\textbf{Configuration A (iterative greedy):} \nameref{sub:learning:multistage} (\ref{sub:learning:multistage}) with 2 stages:
+\begin{enumerate}[nosep]
+    \item[\textit{Stage-1}] \nameref{sub:learning:iterative} (\ref{sub:learning:iterative}) with \(it_{max} = 16\), 4 pattern detector instances---
     \nameref{subsec:pd:numericstrings} (\ref{subsec:pd:numericstrings}), 
     \nameref{subsec:pd:charsetsplit} (\ref{subsec:pd:charsetsplit}), 
     \nameref{subsec:pd:constant} (\ref{subsec:pd:constant}) and 
     \nameref{subsec:pd:dict} (\ref{subsec:pd:dict})
     ---and the \nameref{subsubsec:ps:priority} (\ref{subsubsec:ps:priority}).
     \item[\textit{Stage-2}] One iteration of \nameref{sub:learning:iterative} (\ref{sub:learning:iterative}) with only one pattern detector---    \nameref{subsec:pd:columncorrelation} (\ref{subsec:pd:columncorrelation})---and the \nameref{subsubsec:ps:correlation} (\ref{subsubsec:ps:correlation})
-\end{itemize}
+\end{enumerate}
 
+\vspace{0.5em}
+\noindent\textbf{Configuration B (recursive exhaustive):} \nameref{sub:learning:multistage} (\ref{sub:learning:multistage}) with 2 stages:
+\begin{enumerate}[nosep]
+    \item[\textit{Stage-1}] \nameref{sub:learning:recursiveexhaustive} (\ref{sub:learning:recursiveexhaustive}) with \(h_{max} = 5\), 4 pattern detector instances---
+    \nameref{subsec:pd:numericstrings} (\ref{subsec:pd:numericstrings}), 
+    \nameref{subsec:pd:charsetsplit} (\ref{subsec:pd:charsetsplit}), 
+    \nameref{subsec:pd:constant} (\ref{subsec:pd:constant}) and 
+    \nameref{subsec:pd:dict} (\ref{subsec:pd:dict})
+    ---and the compression estimators (\ref{sub:estimators}) as a cost model.
+    \item[\textit{Stage-2}] One iteration of \nameref{sub:learning:iterative} (\ref{sub:learning:iterative}) with only one pattern detector---    \nameref{subsec:pd:columncorrelation} (\ref{subsec:pd:columncorrelation})---and the \nameref{subsubsec:ps:correlation} (\ref{subsubsec:ps:correlation})
+\end{enumerate}
+
+\vspace{0.5em}
 The parameters for the pattern detectors are the following:\\
 \nameref{subsec:pd:charsetsplit}: 2 charsets: \textit{digits} and \textit{non-digits}---isolates numbers in strings\\
 \nameref{subsec:pd:columncorrelation}: \(corr\_coef_{min} = 0.9\)\\

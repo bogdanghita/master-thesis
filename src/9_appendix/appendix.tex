@@ -49,6 +49,35 @@ The 3-gram frequency representation emphasizes the constituent subparts in which
 
 Due to time constraints, we decided not to proceed with the implementation and evaluation of this approach and leave it for future work.
 
+\chapter{Column correlation graphs}
+\label{appendix:corrgraphs}
+
+The figures below show two examples of \nameref{subsec:pd:columncorrelation} graphs as defined in \ref{subsubsec:ps:correlation}. Figure~\ref{fig:appendix:corrgraphs:yale} shows a common correlation graph resulted from Configuration B (\ref{sec:eval:expsetup}) after applying the \nameref{subsec:pd:columncorrelation} pattern detector (\ref{subsec:pd:columncorrelation}) on the leaf columns of the tree produced by the \nameref{sub:learning:recursiveexhaustive} algorithm (\ref{sub:learning:recursiveexhaustive}) in \textit{Stage-1} (table: \textit{YaleLanguages\_1}).
+Figure~\ref{fig:appendix:corrgraphs:generico} shows a highly complex correlation graph, resulted from Configuration A (\ref{sec:eval:expsetup}) (table: \textit{Generico\_1}). Both configurations resulted in graphs of similar complexities for the same tables. An important note is that these correlations are not directly between the logical columns, but between subcolumns resulted after decomposing them and separating the values into different subsets and exceptions as well. As we see in the figures, this process creates many correlation opportunities---and most of them could not be exploited on the original representation of the data.
+
+Columns with high indegree can be determined by many other columns. This happens to columns that are (almost) constant and---in our case in particular---to exception columns with very high null ratios. The explanation is that, if a column has the same constant value (e.g. \verb|null|), any other column can determine it since all its values will map to the constant value. Columns with high outdegree can determine many other columns. This happens to columns with very low repetition factor (i.e. rather unique), since there is a perfect mapping between a unique column and any other column. However, this does not happen in our case, since we only use \nameref{subsec:pd:columncorrelation} on \nameref{subsec:pd:dict} compressible columns. Besides these special cases of nearly constant or unique columns, high degrees result from actual correlations between (sub)columns created by the learning algorithms.
+
+% The correlation coefficients are computed as described in \ref{todo}. Recall that column correlation only applies on Dict represented columns and therefore the graph only contains these columns.
+
+\begin{sidewaysfigure}[h]
+  \centering
+  \makebox[\textwidth][c]{
+    \includegraphics[width=0.88\linewidth]{YaleLanguages_1-s_1_l_0-graph.pdf}
+  }
+  \caption{\textit{YaleLanguages\_1} correlation graph}
+  \label{fig:appendix:corrgraphs:yale}
+\end{sidewaysfigure}
+
+\begin{sidewaysfigure}[h]
+  \centering
+  \makebox[\textwidth][c]{
+    \includegraphics[width=1.08\linewidth]{Generico_1-corr-s_1_l_0-graph.pdf}
+  }
+  \caption{\textit{Generico\_1} correlation graph}
+  \label{fig:appendix:corrgraphs:generico}
+\end{sidewaysfigure}
+
+
 % --------- notes --------- %
 
 \iffalse

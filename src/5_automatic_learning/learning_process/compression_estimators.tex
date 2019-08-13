@@ -144,7 +144,7 @@ where:
 \subsubsection{Run Length Encoding estimator}
 \label{subsub:estimator:rle}
 
-The \nameref{subsub:estimator:rle} predicts the size of the input column as compressed with RLE. Even though RLE can be applied to any data type, we limited the scope of our estimator to numeric columns. The other data types are either compressed with Dictionary encoding (\verb|VARCHAR|) or are very rare in the Public BI benchmark and do not present compression opportunities. We use the following terminology:\\
+The \nameref{subsub:estimator:rle} predicts the size of the input column as compressed with RLE. The samples are constructed with consecutive ranges of values such that RLE is triggered (see \ref{subsec:eval:methodology:sampling}~\nameref{subsec:eval:methodology:sampling} for more details). Even though RLE can be applied to any data type, we limited the scope of our estimator to numeric columns. The other data types are either compressed with Dictionary encoding (\verb|VARCHAR|) or are very rare in the Public BI benchmark and do not present compression opportunities. We use the following terminology:\\
 1) \textit{run} value = a data value that is repeated on consecutive rows.\\
 2) \textit{length} value = the number of consecutive occurrences of a \textit{run} value
 

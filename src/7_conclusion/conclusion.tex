@@ -14,10 +14,10 @@
 
 \section{Conclusion}
 
-In this thesis we explored the concept of \textit{whitebox compression}. We analysed the Public BI benchmark in search for compression opportunities. Based on our findings we defined a new compression model which uses elementary operators to represent data more compactly. We further defined an automatic compression learning process and created a proof-of-concept implementation to measure its feasibility and compression potential. Let us recall the research questions together with their answers.
+In this thesis we explored the concept of \textit{whitebox compression}. We defined and analysed the Public BI benchmark in search for compression opportunities, by studying real, user-generated datasets. Based on our findings we defined a new compression model which uses elementary operators to represent data more compactly. We further defined an automatic compression learning process and created a proof-of-concept implementation to measure its feasibility and compression potential. Let us recall the research questions together with their answers.
 
 \textbf{What does real user generated data look like---specifically in the case of the Public BI benchmark?}
-From our analysis we concluded that real data is redundant and represented in inefficient ways, from "suboptimal" datatypes, to highly correlated or even duplicate columns. Most of the string columns have a high repetition factor, making them suitable for dictionary-like encoding techniques.
+From our analysis we concluded that real data is redundant and represented in inefficient ways, from "suboptimal" datatypes, to highly correlated or even duplicate columns. Most of the string columns in the Public BI benchmark have a high repetition factor, making them suitable for dictionary-like encoding techniques.
 \iffalse
 % \item What patterns can we find in the columns of each dataset?
 % \item Inefficient ways of representing data?
@@ -41,7 +41,7 @@ From our analysis we concluded that real data is redundant and represented in in
 \fi
 
 \textbf{Can we create an automatic learning process that will generate suitable compression trees for each column?}
-We defined and implemented a set of pattern detectors which identify compression opportunities present in the data and evaluate its potential for \textit{whitebox} representation. We further defined the optimization problem of finding the best representation for a set of columns and proposed algorithms that solve it using an estimator cost model and greedy heuristics. We validated our compression model with a proof-of-concept implementation, achieving an overall compression ratio of 3.58 on the full data and 5.16 on the columns represented through \textit{whitebox compression}.\\
+We defined and implemented a set of pattern detectors which identify compression opportunities present in the data and evaluate its potential for \textit{whitebox} representation. We further defined the optimization problem of finding the best representation for a set of columns and proposed algorithms that solve it using an estimator cost model and greedy heuristics. We validated our compression model with a proof-of-concept implementation, achieving an overall compression ratio of 3.69 on the full data and 6.45 on the columns represented through \textit{whitebox compression}---an almost factor \(2\times\) (1.92) improvement of VectorWise.\\
 \iffalse
 % \item Will it provide a high compression ratio?
 % \item How will it compare to existing solutions?
@@ -50,6 +50,8 @@ We defined and implemented a set of pattern detectors which identify compression
 
 \noindent
 Besides improved compression ratios, \textit{whitebox compression} in itself is an important contribution to the database research field as a new compression model. The transparent representation of logical columns as functions of physical columns through operator expressions simplifies the compression layer of database systems. It allows implicit recursive compression through an unlimited number of methods, while handling exceptions in a generic way. On top of this, \textit{whitebox compression} has the potential of improving query processing times by exposing the data representation to the query execution engine, allowing predicate push-down and lazy evaluation of the compression tree. This model can be implemented either as a stand-alone system with \textit{whitebox} versions of the existing compression methods or as an intermediate representation layer which creates compression opportunities for the optimized blackbox schemes.
+
+On a more general level, \textit{whitebox compression} and the learning of representation models can be seen as part of a trend to adapt database storage and query processing methods to the data, similarly to \textit{learned indexes} \cite{kraska2018case} or \textit{learned systems} \cite{idreos2019auto,kraska2019sagedb}. This idea does have important system-wide consequences as well: a system that reads \textit{whitebox} compressed data will read compression expressions from the block header and will have to quickly instantiate some query evaluation infrastructure to parse it, performing decompression and/or predicate push-down. We can think of methds that employ JIT code generation for this, as well as vectorized execution methods leveraging SIMD. Keeping the latency and overhead of this process low is a research question that we leave for future work.
 
 \iffalse
 % - real data is redundant and represented in inefficient ways. It is already suit-
@@ -76,7 +78,7 @@ There are compression opportunities in some datasets that are not yet covered by
 
 \textit{Whitebox compression} has potential for achieving fast query execution. However, this potential needs to be properly evaluated. Most importantly, we need efficient compression and decompression implementations. So far we implemented unoptimized versions of these procedures to evaluate the compression ratios and validate the correctness of our implementation by reconstructing the original data. An important step towards improved execution time is to use a different cost model for the learning algorithms---one that also takes into account the complexity of the compression tree (e.g. in terms of depth and branching factor). Going further, we can design a compression tree optimization process with the purpose of reducing its complexity (similar to query plan optimization). Furthermore, we should answer our 5th research question mentioned in the introduction: Can we achieve compressed execution with the \textit{whitebox compression} model? We need to study predicate push-down opportunities from the perspective of both data and queries, with the hope that we can (partially) skip decompression and operate directly on compressed data.
 
-Finally, a machine learning approach for pattern detection and solving the compression learning optimization problem might lead to interesting results, provided that we can extract relevant features from the datasets and properly define our problem so that it fits the machine learning models.
+Finally, a \textit{machine learning} approach for pattern detection and solving the compression learning optimization problem might lead to interesting results, provided that we can extract relevant features from the datasets and properly define our problem so that it fits the \textit{machine learning} models.
 
 \iffalse
 % - there is a lot more to improve, we just tested and showed the potential of whitebox compression through a basic implementation; all components: pattern detectors, pattern selectors, learning algorithms, estimators can be improved (there is a lot of room for improvement); even with this initial exploratory approach we obtained good results (insert result here), which only encourages future work on this topic; 
